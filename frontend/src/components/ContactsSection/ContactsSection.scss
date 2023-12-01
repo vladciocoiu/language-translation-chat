@@ -1,38 +1,42 @@
 .contacts-section {
-	margin: 0;
-	box-sizing: border-box;
+	--contacts-section-width: 300px;
 
-	// border: 1px solid white;
-	padding: 20px;
+	margin: 0;
+	border-right: 1px solid #555;
+	padding: 0;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: center;
+	justify-content: flex-start;
 	height: 100vh;
-	width: 300px;
+	width: var(--contacts-section-width);
+	overflow-y: scroll;
+	overflow-x: hidden;
 
 	h1 {
-		flex: 1;
+		font-size: 24px;
 	}
 }
 
 .contacts-list {
-	flex: 5;
 	display: flex;
 	flex-direction: column;
 	align-items: start;
 	justify-content: center;
-	gap: 20px;
 	list-style-type: none;
 	padding: 0;
+	width: 100%;
 }
 
 .contact {
+	width: var(--contacts-section-width);
 	display: flex;
 	flex-direction: column;
 	align-items: start;
 	justify-content: center;
+	border-top: 1px solid #333;
 	p {
 		margin: 0;
+		padding: 20px 20px;
 	}
 }

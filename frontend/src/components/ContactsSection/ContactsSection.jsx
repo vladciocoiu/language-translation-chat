@@ -8,6 +8,11 @@ const ContactsSection = () => {
 		{ name: "John Smith", email: "john.smith@gmail.com" },
 		{ name: "Jane Smith", email: "jane.smith@gmail.com" },
 		{ name: "John Doe", email: "john.doe@gmail.com" },
+		{ name: "John Doe 2", email: "john.doe2@gmail.com" },
+		{ name: "Jane Doe 2", email: "jane.doe2@gmail.com" },
+		{ name: "John Smith 2", email: "john.smith2@gmail.com" },
+		{ name: "Jane Smith 2", email: "jane.smith2@gmail.com" },
+		{ name: "John Doe 2", email: "john.doe2@gmail.com" },
 	];
 	const [contacts, setContacts] = useState(mockContacts);
 
@@ -18,7 +23,6 @@ const ContactsSection = () => {
 				{contacts.map((contact, index) => (
 					<li key={index} className="contact">
 						<p className="contact-name">{contact.name}</p>
-						<p className="contact-email">{contact.email}</p>
 					</li>
 				))}
 			</ul>

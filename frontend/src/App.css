@@ -1,4 +1,7 @@
 #root {
 	width: 100vw;
 	height: 100vh;
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
 }
