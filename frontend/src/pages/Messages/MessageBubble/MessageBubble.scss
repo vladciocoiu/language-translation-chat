@@ -1,0 +1,30 @@
+.message-bubble {
+	border-radius: 10px;
+	padding: 20px 50px 20px 20px;
+	max-width: 500px;
+	display: flex;
+	flex-direction: column;
+
+	.message-text {
+		font-size: 16px;
+		margin: 0;
+		padding: 0;
+	}
+
+	.message-timestamp {
+		font-size: 10px;
+		margin: 0;
+		padding: 0;
+		font-style: italic;
+	}
+}
+
+.message-bubble.sent {
+	background-color: green;
+	align-self: flex-end;
+}
+
+.message-bubble.received {
+	background-color: #888;
+	align-self: flex-start;
+}

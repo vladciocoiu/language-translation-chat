@@ -1,5 +1,5 @@
-.contacts-section {
-  --contacts-section-width: 300px;
+.contact-section {
+  flex: 1;
   margin: 0;
   border-right: 1px solid #555;
   padding: 0;
@@ -8,15 +8,14 @@
   align-items: center;
   justify-content: flex-start;
   height: 100vh;
-  width: var(--contacts-section-width);
   overflow-y: scroll;
   overflow-x: hidden;
 }
-.contacts-section h1 {
+.contact-section h1 {
   font-size: 24px;
 }
 
-.contacts-list {
+.contact-list {
   display: flex;
   flex-direction: column;
   align-items: start;
@@ -27,7 +26,7 @@
 }
 
 .contact {
-  width: var(--contacts-section-width);
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: start;
@@ -37,4 +36,13 @@
 .contact p {
   margin: 0;
   padding: 20px 20px;
-}/*# sourceMappingURL=ContactsSection.css.map */
+}
+
+.contact:hover {
+  background-color: #333;
+  cursor: pointer;
+}
+
+.contact.active {
+  background-color: #555;
+}/*# sourceMappingURL=ContactSection.css.map */
