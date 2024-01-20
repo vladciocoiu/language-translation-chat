@@ -20,11 +20,12 @@
 }
 
 .message-bubble.sent {
-	background-color: green;
+	background-color: var(--color-secondary);
+	color: var(--color-primary);
 	align-self: flex-end;
 }
 
 .message-bubble.received {
-	background-color: #888;
+	background-color: var(--color-primary-3);
 	align-self: flex-start;
 }
