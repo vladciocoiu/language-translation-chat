@@ -1,5 +1,4 @@
 .contact-section {
-	flex: 1;
 	margin: 0;
 	padding: 0;
 	display: flex;
@@ -8,12 +7,22 @@
 	justify-content: flex-start;
 	height: 100vh;
 	overflow-y: scroll;
-	overflow-x: hidden;
+	overflow-x: visible;
+	position: relative;
+	transition: 0.07s ease-in-out;
 	background-color: var(--color-primary);
 
 	h1 {
 		font-size: 24px;
 	}
+}
+
+.contact-section.open {
+	width: 360px;
+}
+
+.contact-section.closed {
+	width: 0;
 }
 
 .contact-list {

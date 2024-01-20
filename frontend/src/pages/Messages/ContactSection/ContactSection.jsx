@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import "./ContactSection.css";
 import { change } from "../../../components/CurrentContact";
 
-const ContactSection = () => {
+const ContactSection = ({ isOpen }) => {
 	const currentContact = useSelector((state) => state.currentContact.value);
 	const dispatch = useDispatch();
 
@@ -22,7 +22,7 @@ const ContactSection = () => {
 	const [contacts, setContacts] = useState(mockContacts);
 
 	return (
-		<div className="contact-section">
+		<div className={"contact-section " + (isOpen ? "open" : "closed")}>
 			<h1>Contacts</h1>
 			<ul className="contact-list">
 				{contacts.map((contact, index) => (
