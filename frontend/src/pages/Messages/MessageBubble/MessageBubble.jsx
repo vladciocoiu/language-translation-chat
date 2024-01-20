@@ -2,10 +2,9 @@ import React from "react";
 import getDateStringFromTimestamp from "../../../utils/getDateStringFromTimestamp.js";
 import "./MessageBubble.css";
 
-const MessageBubble = ({ key, message }) => {
+const MessageBubble = ({ message }) => {
 	return (
 		<div
-			key={key}
 			className={
 				"message-bubble" + (message.senderId === 0 ? " sent" : " received")
 			}

@@ -4,3 +4,16 @@
 	display: flex;
 	background-color: var(--color-primary);
 }
+
+.contact-section-toggle {
+	margin: 20px;
+	position: absolute;
+	top: 0;
+}
+
+.contact-section-toggle.open {
+	left: 360px;
+}
+.contact-section-toggle.closed {
+	left: 0;
+}
