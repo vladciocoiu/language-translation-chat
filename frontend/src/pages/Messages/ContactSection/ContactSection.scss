@@ -1,7 +1,6 @@
 .contact-section {
 	flex: 1;
 	margin: 0;
-	border-right: 1px solid #555;
 	padding: 0;
 	display: flex;
 	flex-direction: column;
@@ -10,6 +9,7 @@
 	height: 100vh;
 	overflow-y: scroll;
 	overflow-x: hidden;
+	background-color: var(--color-primary);
 
 	h1 {
 		font-size: 24px;
@@ -32,7 +32,8 @@
 	flex-direction: column;
 	align-items: start;
 	justify-content: center;
-	border-top: 1px solid #333;
+	border-top: 1px solid var(--color-primary-2);
+	background-color: var(--color-primary);
 	p {
 		margin: 0;
 		padding: 20px 20px;
@@ -40,10 +41,11 @@
 }
 
 .contact:hover {
-	background-color: #333;
+	background-color: var(--color-secondary-2);
 	cursor: pointer;
 }
 
 .contact.active {
-	background-color: #555;
+	background-color: var(--color-secondary);
+	color: var(--color-primary);
 }
