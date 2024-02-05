@@ -1,0 +1,77 @@
+.register-box-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.register-box-container .error {
+  position: absolute;
+  color: red;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  width: 200px;
+  top: 20%;
+  left: calc(50% - 100px);
+}
+
+.register-box {
+  background-color: var(--color-primary-2);
+  padding: 30px 40px;
+  border-radius: 10px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.register-heading {
+  color: white;
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  padding: 0;
+  margin: 0;
+  margin-top: 5px;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+.register-form input {
+  background-color: var(--color-primary-3);
+  border: none;
+  border-radius: 7px;
+  padding: 10px;
+  color: white;
+  font-size: 14px;
+  width: 100%;
+}
+.register-form .submit-button {
+  margin-top: 20px;
+  background-color: var(--color-secondary-2);
+  width: 50%;
+}
+.register-form .submit-button:hover {
+  background-color: var(--color-secondary-3);
+  color: white;
+}
+
+.login-link {
+  color: white;
+}
+
+@media screen and (max-width: 400px) {
+  .register-box {
+    width: 240px;
+    padding: 30px;
+  }
+}/*# sourceMappingURL=Register.css.map */

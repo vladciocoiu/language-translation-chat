@@ -1,12 +1,13 @@
 import React from "react";
-import Messages from "../pages/Messages/Messages";
+import { BrowserRouter } from "react-router-dom";
+import Router from "../components/Router";
 import "./App.css";
 
 function App() {
 	return (
-		<>
-			<Messages />
-		</>
+		<BrowserRouter>
+			<Router />
+		</BrowserRouter>
 	);
 }
 
