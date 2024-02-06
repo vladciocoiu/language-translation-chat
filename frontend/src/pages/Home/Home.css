@@ -1,1 +1,82 @@
-/*# sourceMappingURL=Home.css.map */
+.home-main {
+  box-sizing: border-box;
+  width: 100vw;
+  height: 100vh;
+  padding: 0 100px;
+  overflow: hidden;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.8);
+}
+.home-main h1 {
+  margin-top: 0;
+}
+.home-main li {
+  list-style: none;
+}
+.home-main a {
+  text-decoration: none;
+  color: white;
+}
+.home-main ul {
+  margin-top: 50px;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+.home-main button {
+  border: none;
+  padding: 15px 20px;
+  border-radius: 10px;
+}
+.home-main .sign-up-button {
+  background-color: var(--color-primary);
+}
+.home-main .sign-up-button:hover {
+  background-color: var(--color-primary-2);
+}
+.home-main .login-button {
+  background-color: var(--color-secondary-2);
+}
+.home-main .login-button:hover {
+  background-color: var(--color-secondary-3);
+}
+.home-main p {
+  margin: 0;
+  font-size: 28px;
+}
+.home-main .flags-img {
+  z-index: -1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  -o-object-fit: cover;
+     object-fit: cover;
+  width: 100vw;
+  height: 100vh;
+}
+
+@media screen and (max-width: 768px) {
+  .home-main {
+    padding: 0 40px;
+  }
+  .home-main p {
+    font-size: 26px;
+  }
+}
+@media screen and (max-width: 550px) {
+  .home-main {
+    padding: 0 20px;
+  }
+  .home-main p {
+    font-size: 20px;
+  }
+  .home-main h1 {
+    font-size: 40px;
+  }
+}/*# sourceMappingURL=Home.css.map */

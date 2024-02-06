@@ -56,4 +56,18 @@
 .contact.active {
   background-color: var(--color-secondary);
   color: var(--color-primary);
+}
+
+@media screen and (max-width: 1024px) {
+  .contact-section.open {
+    width: 50vw;
+  }
+}
+@media screen and (max-width: 768px) {
+  .contact-section {
+    position: absolute;
+  }
+  .contact-section.open {
+    width: 100vw;
+  }
 }/*# sourceMappingURL=ContactSection.css.map */
