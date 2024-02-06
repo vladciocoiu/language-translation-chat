@@ -17,3 +17,25 @@
 .contact-section-toggle.closed {
 	left: 0;
 }
+
+@media screen and (max-width: 1024px) {
+	.contact-section-toggle.open {
+		left: 50vw;
+	}
+}
+
+@media screen and (max-width: 768px) {
+	.contact-section-toggle.open {
+		left: calc(100vw - 80px);
+	}
+	.contact-section-toggle.icon-button {
+		background: none;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.icon-button.contact-section-toggle svg {
+		width: 20px;
+		height: 20px;
+	}
+}
