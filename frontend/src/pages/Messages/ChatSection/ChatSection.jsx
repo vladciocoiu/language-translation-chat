@@ -66,7 +66,6 @@ const ChatSection = () => {
 		<div className="chat-section">
 			<div className="chat-section-header">
 				<p className="contact-name">{currentContact?.name}</p>
-				<p className="contact-email">{currentContact?.email}</p>
 			</div>
 			<div className="message-list" ref={scrollableRef}>
 				{messages.map((message, index) => (
