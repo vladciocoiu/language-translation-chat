@@ -1,0 +1,38 @@
+.contact-card {
+  position: absolute;
+  background-color: var(--color-primary-2);
+  padding: 30px;
+  padding-right: 45px;
+  border-radius: 10px;
+  display: grid;
+  grid-template-areas: "pic name" "email email";
+  justify-items: center;
+  align-items: center;
+  gap: 20px;
+  z-index: 5;
+  box-shadow: 1px 1px 5px 1px var(--color-primary);
+}
+.contact-card .profile-picture {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+.contact-card img {
+  grid-area: pic;
+}
+.contact-card h2 {
+  grid-area: name;
+  margin: 0;
+}
+.contact-card p {
+  margin: 0;
+  grid-area: email;
+}
+.contact-card .close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+.contact-card .close-button:hover {
+  cursor: pointer;
+}/*# sourceMappingURL=ContactCard.css.map */

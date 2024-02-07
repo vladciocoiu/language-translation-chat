@@ -11,9 +11,17 @@
 	position: relative;
 	transition: 0.07s ease-in-out;
 	background-color: var(--color-primary);
-
-	h1 {
-		font-size: 24px;
+	.contacts-heading-div {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		background-color: black;
+		position: sticky;
+		top: 0;
+		h1 {
+			font-size: 24px;
+		}
 	}
 }
 
@@ -36,16 +44,24 @@
 }
 
 .contact {
+	box-sizing: border-box;
 	width: 100%;
 	display: flex;
-	flex-direction: column;
-	align-items: start;
-	justify-content: center;
+	align-items: center;
+	justify-content: start;
+	padding-left: 20%;
+	gap: 20px;
 	border-top: 1px solid var(--color-primary-2);
 	background-color: var(--color-primary);
+
 	p {
 		margin: 0;
 		padding: 20px 20px;
+	}
+	.profile-picture {
+		width: 32px;
+		height: 32px;
+		border-radius: 50%;
 	}
 }
 
