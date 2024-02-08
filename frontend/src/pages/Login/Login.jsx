@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { changeUser, setLoggedIn } from "../../components/Auth";
 import "./Login.css";
@@ -11,7 +11,6 @@ const Login = () => {
 
 	const auth = useSelector((state) => state.auth.value);
 	const dispatch = useDispatch();
-	const navigate = useNavigate();
 
 	const handleEmailChange = (e) => {
 		if (error) setError("");
@@ -41,7 +40,7 @@ const Login = () => {
 		}
 	};
 
-	if (auth.isLoggedIn) navigate("/messages");
+	if (auth.isLoggedIn) return <Navigate to="/messages" />;
 
 	return (
 		<div className="login-box-container">

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import "./Register.css";
 
@@ -10,7 +10,6 @@ const Register = () => {
 	const [error, setError] = useState("");
 
 	const auth = useSelector((state) => state.auth.value);
-	const navigate = useNavigate();
 
 	const handleDisplayNameChange = (e) => {
 		setDisplayName(e.target.value);
@@ -29,7 +28,7 @@ const Register = () => {
 		// TODO: Implement registration logic
 	};
 
-	if (auth.isLoggedIn) navigate("/messages");
+	if (auth.isLoggedIn) return <Navigate to="/messages" />;
 
 	return (
 		<div className="register-box-container">
