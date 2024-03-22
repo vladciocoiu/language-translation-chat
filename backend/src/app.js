@@ -7,9 +7,6 @@ const cors = require("cors");
 // load .env file
 require("dotenv").config();
 
-// get db connection pool
-const pool = require("./config/database");
-
 const app = express();
 
 app.use(

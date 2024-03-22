@@ -1,10 +1,10 @@
 const { Sequelize, DataTypes } = require("sequelize");
 require("dotenv").config();
 
-const sequelize = new Sequelize(process.env.DB_URL);
+const sequelize = require("../config/database");
 
 const User = sequelize.define("User", {
-	username: {
+	name: {
 		type: DataTypes.STRING,
 		allowNull: false,
 		unique: true,
@@ -18,13 +18,6 @@ const User = sequelize.define("User", {
 		type: DataTypes.STRING,
 		allowNull: false,
 	},
-});
-
-const RefreshToken = require("./refreshToken");
-
-User.hasMany(RefreshToken, {
-	foreignKey: "userId",
-	onDelete: "CASCADE",
 });
 
 // Sync the model with the database (creates the table if it doesn't exist)

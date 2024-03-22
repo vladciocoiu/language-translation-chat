@@ -1,6 +1,6 @@
 const express = require("express");
 
-const authRouter = require("./authRoutes");
+const authRouter = require("./authRouter");
 
 const router = express.Router({ mergeParams: true });
 
