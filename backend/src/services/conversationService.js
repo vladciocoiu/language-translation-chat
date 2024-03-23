@@ -41,7 +41,7 @@ async function addUserToConversation(userId, conversationId) {
 		if (!user) return false;
 
 		const conversation = await Conversation.findByPk(conversationId);
-		if (!conversation) return false;
+		if (!conversation || !conversation.isGroup) return false;
 
 		await conversation.addUser(user);
 		return true;
@@ -56,7 +56,7 @@ async function removeUserFromConversation(userId, conversationId) {
 		if (!user) return false;
 
 		const conversation = await Conversation.findByPk(conversationId);
-		if (!conversation) return false;
+		if (!conversation || !conversation.isGroup) return false;
 
 		await conversation.removeUser(user);
 		return true;
