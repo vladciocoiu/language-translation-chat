@@ -1,9 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
-const conversationController = require("../controllers/conversationController");
+const userController = require("../controllers/userController");
 
-router.post("/register", validateRegister, authController.register);
-router.post("/login", validateLogin, authController.login);
+router.get("/:userId/conversations", userController.getConversationsByUserId);
 
 module.exports = router;

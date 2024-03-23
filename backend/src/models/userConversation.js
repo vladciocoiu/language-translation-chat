@@ -6,22 +6,7 @@ const User = require("./user");
 
 const Conversation = require("./conversation");
 
-const UserConversation = sequelize.define("UserConversation", {
-	userId: {
-		type: DataTypes.INTEGER,
-		references: {
-			model: User,
-			key: "id",
-		},
-	},
-	conversationId: {
-		type: DataTypes.INTEGER,
-		references: {
-			model: Conversation,
-			key: "id",
-		},
-	},
-});
+const UserConversation = sequelize.define("UserConversation", {});
 
 Conversation.belongsToMany(User, {
 	through: UserConversation,
@@ -34,7 +19,7 @@ User.belongsToMany(Conversation, {
 // Sync the model with the database (creates the table if it doesn't exist)
 (async () => {
 	try {
-		await UserConversation.sync({ force: true }); // This will drop the table if it already exists
+		await UserConversation.sync();
 		console.log("UserConversation table synced");
 	} catch (error) {
 		console.error("Error syncing UserConversation table: ", error);

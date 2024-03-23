@@ -1,6 +1,8 @@
 const User = require("../models/user");
 const Conversation = require("../models/conversation");
 
+const UserConversation = require("../models/userConversation");
+
 async function createConversation(conversationData) {
 	try {
 		return await Conversation.create(conversationData);
@@ -9,15 +11,36 @@ async function createConversation(conversationData) {
 	}
 }
 
+async function updateConversation(conversationId, conversationData) {
+	try {
+		const conversation = await Conversation.findByPk(conversationId);
+		if (!conversation) return false;
+
+		await conversation.update(conversationData);
+		return true;
+	} catch (error) {
+		throw new Error("Error updating conversation");
+	}
+}
+
+async function deleteConversation(conversationId) {
+	try {
+		const conversation = await Conversation.findByPk(conversationId);
+		if (!conversation) return false;
+
+		await conversation.destroy();
+		return true;
+	} catch (error) {
+		throw new Error("Error deleting conversation");
+	}
+}
+
 async function addUserToConversation(userId, conversationId) {
-	return true;
 	try {
 		const user = await User.findByPk(userId);
-		console.log(user);
 		if (!user) return false;
 
 		const conversation = await Conversation.findByPk(conversationId);
-		console.log(conversation);
 		if (!conversation) return false;
 
 		await conversation.addUser(user);
@@ -27,4 +50,25 @@ async function addUserToConversation(userId, conversationId) {
 	}
 }
 
-module.exports = { createConversation, addUserToConversation };
+async function removeUserFromConversation(userId, conversationId) {
+	try {
+		const user = await User.findByPk(userId);
+		if (!user) return false;
+
+		const conversation = await Conversation.findByPk(conversationId);
+		if (!conversation) return false;
+
+		await conversation.removeUser(user);
+		return true;
+	} catch (error) {
+		throw new Error("Error removing user from conversation");
+	}
+}
+
+module.exports = {
+	createConversation,
+	updateConversation,
+	deleteConversation,
+	addUserToConversation,
+	removeUserFromConversation,
+};

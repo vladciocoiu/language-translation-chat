@@ -17,7 +17,7 @@ const Conversation = sequelize.define("Conversation", {
 // Sync the model with the database (creates the table if it doesn't exist)
 (async () => {
 	try {
-		await Conversation.sync({ force: true }); // This will drop the table if it already exists
+		await Conversation.sync();
 		console.log("Conversation table synced");
 	} catch (error) {
 		console.error("Error syncing Conversation table: ", error);
