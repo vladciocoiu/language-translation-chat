@@ -1,7 +1,10 @@
+const { Op } = require("sequelize");
+
 const User = require("../models/user");
 const Conversation = require("../models/conversation");
 
 const ConversationDTO = require("../dtos/conversationDTO");
+const UserDTO = require("../dtos/userDTO");
 
 async function createUser(userData) {
 	try {
@@ -32,4 +35,38 @@ async function getConversationsByUserId(userId) {
 	}
 }
 
-module.exports = { createUser, getUserByEmail, getConversationsByUserId };
+async function getUsersByNameOrEmail(query) {
+	try {
+		const result = await User.findAll({
+			where: {
+				[Op.or]: [
+					{ name: { [Op.like]: `%${query}%` } },
+					{ email: { [Op.like]: `%${query}%` } },
+				],
+			},
+		});
+		return result.map((user) => new UserDTO(user.dataValues));
+	} catch (error) {
+		throw new Error("Error fetching users by name or email");
+	}
+}
+
+async function updateUser(userId, userData) {
+	try {
+		const user = await User.findByPk(userId);
+		if (!user) return false;
+
+		await user.update(userData);
+		return true;
+	} catch (error) {
+		throw new Error("Error updating user");
+	}
+}
+
+module.exports = {
+	createUser,
+	getUserByEmail,
+	getUsersByNameOrEmail,
+	getConversationsByUserId,
+	updateUser,
+};
