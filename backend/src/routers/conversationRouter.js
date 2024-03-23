@@ -17,4 +17,10 @@ router.delete(
 	conversationController.removeUserFromConversation
 );
 
+router.get(
+	"/:conversationId/messages",
+	conversationController.getMessagesByConversationId
+);
+router.post("/:conversationId/messages", conversationController.createMessage);
+
 module.exports = router;
