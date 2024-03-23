@@ -1,4 +1,7 @@
 const User = require("../models/user");
+const Conversation = require("../models/conversation");
+
+const ConversationDTO = require("../dtos/conversationDTO");
 
 async function createUser(userData) {
 	try {
@@ -16,4 +19,17 @@ async function getUserByEmail(email) {
 	}
 }
 
-module.exports = { createUser, getUserByEmail };
+async function getConversationsByUserId(userId) {
+	try {
+		const result = await User.findByPk(userId, {
+			include: Conversation,
+		});
+		return result.Conversations.map(
+			(conversation) => new ConversationDTO(conversation.dataValues)
+		);
+	} catch (error) {
+		throw new Error("Error fetching conversations by user id");
+	}
+}
+
+module.exports = { createUser, getUserByEmail, getConversationsByUserId };
