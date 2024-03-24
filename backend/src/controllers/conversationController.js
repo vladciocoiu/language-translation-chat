@@ -14,7 +14,7 @@ const {
 
 exports.createConversation = async (req, res) => {
 	// get info from req body
-	const { isGroup, name } = req.body;
+	const { isGroup, name } = req.validatedPayload;
 
 	// save new conversation
 	let conversation;
@@ -32,7 +32,7 @@ exports.updateConversation = async (req, res) => {
 	const { conversationId } = req.params;
 
 	// get info from req body
-	const { name } = req.body;
+	const { name } = req.validatedPayload;
 
 	// update conversation
 	let success;
@@ -70,7 +70,7 @@ exports.addUserToConversation = async (req, res) => {
 	const { conversationId } = req.params;
 
 	// get info from req body
-	const { userId } = req.body;
+	const { userId } = req.validatedPayload;
 
 	// add user to conversation
 	let success;
@@ -107,7 +107,7 @@ exports.createMessage = async (req, res) => {
 	const { conversationId } = req.params;
 
 	// get info from req body
-	const { text, senderId } = req.body;
+	const { text, senderId } = req.validatedPayload;
 
 	// save new message
 	let message;

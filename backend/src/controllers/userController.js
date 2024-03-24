@@ -43,7 +43,7 @@ exports.updateUser = async (req, res) => {
 	const { userId } = req.params;
 
 	// get info from req body (only name for now)
-	const { name } = req.body;
+	const { name } = req.validatedPayload;
 
 	// update user
 	let success;

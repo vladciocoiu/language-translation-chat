@@ -69,9 +69,22 @@ async function getMessagesByConversationId(conversationId, offset, limit) {
 	}
 }
 
+// helper for validateUser middleware
+async function isUserSenderOfMessage(userId, messageId) {
+	try {
+		const message = await Message.findByPk(messageId);
+		if (!message) return false;
+
+		return message.senderId === userId;
+	} catch (error) {
+		throw new Error("Error checking if user is sender of message");
+	}
+}
+
 module.exports = {
 	createMessage,
 	deleteMessage,
 	updateMessage,
 	getMessagesByConversationId,
+	isUserSenderOfMessage,
 };
