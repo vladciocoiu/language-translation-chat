@@ -81,10 +81,47 @@ async function isUserSenderOfMessage(userId, messageId) {
 	}
 }
 
+async function sendDirectMessage(senderId, receiverId, text) {
+	if (senderId === receiverId) return false;
+
+	try {
+		const conversation = await Conversation.findOne({
+			where: { isGroup: false },
+			include: [
+				{
+					model: User,
+					where: { id: senderId },
+				},
+				{
+					model: User,
+					where: { id: receiverId },
+				},
+			],
+		});
+
+		if (!conversation) {
+			const newConversation = await Conversation.create({ isGroup: false });
+			await newConversation.addUser(senderId);
+			await newConversation.addUser(receiverId);
+		}
+
+		await createMessage({
+			text,
+			senderId,
+			conversationId: conversation.id,
+		});
+	} catch (error) {
+		throw new Error("Error sending direct message");
+	}
+
+	return true;
+}
+
 module.exports = {
 	createMessage,
 	deleteMessage,
 	updateMessage,
 	getMessagesByConversationId,
 	isUserSenderOfMessage,
+	sendDirectMessage,
 };

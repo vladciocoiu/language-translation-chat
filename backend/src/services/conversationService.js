@@ -3,9 +3,13 @@ const Conversation = require("../models/conversation");
 
 const UserConversation = require("../models/userConversation");
 
-async function createConversation(conversationData) {
+async function createConversation(conversationData, userId) {
 	try {
-		return await Conversation.create(conversationData);
+		const conversation = await Conversation.create(conversationData);
+
+		await conversation.addUser(userId);
+
+		return conversation;
 	} catch (error) {
 		throw new Error("Error creating conversation");
 	}

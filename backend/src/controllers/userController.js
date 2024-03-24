@@ -4,6 +4,8 @@ const {
 	updateUser,
 } = require("../services/userService");
 
+const { sendDirectMessage } = require("../services/messageService");
+
 exports.getConversationsByUserId = async (req, res) => {
 	// get info from req params
 	const { userId } = req.params;
@@ -54,6 +56,26 @@ exports.updateUser = async (req, res) => {
 	}
 
 	if (!success) return res.status(400).json({ error: "User not found." });
+
+	res.json({ success: true });
+};
+
+exports.sendDirectMessage = async (req, res) => {
+	const { userId } = req.params;
+
+	const { text } = req.validatedPayload;
+
+	const senderId = req.user.userId;
+
+	let success;
+	try {
+		success = await sendDirectMessage(senderId, userId, text);
+	} catch (err) {
+		return res.status(500).json({ error: err });
+	}
+
+	if (!success)
+		return res.status(400).json({ error: "Error sending direct message." });
 
 	res.json({ success: true });
 };
