@@ -65,10 +65,26 @@ async function removeUserFromConversation(userId, conversationId) {
 	}
 }
 
+// helper for validateUser middleware
+async function isUserInConversation(userId, conversationId) {
+	try {
+		const user = await User.findByPk(userId);
+		if (!user) return false;
+
+		const conversation = await Conversation.findByPk(conversationId);
+		if (!conversation) return false;
+
+		return await conversation.hasUser(user);
+	} catch (error) {
+		throw new Error("Error checking if user is in conversation");
+	}
+}
+
 module.exports = {
 	createConversation,
 	updateConversation,
 	deleteConversation,
 	addUserToConversation,
 	removeUserFromConversation,
+	isUserInConversation,
 };

@@ -63,10 +63,21 @@ async function updateUser(userId, userData) {
 	}
 }
 
+// helper for verifyUser middleware
+async function doesUserExist(userId) {
+	try {
+		const user = await User.findByPk(userId);
+		return !!user;
+	} catch (error) {
+		throw new Error("Error checking if user exists");
+	}
+}
+
 module.exports = {
 	createUser,
 	getUserByEmail,
 	getUsersByNameOrEmail,
 	getConversationsByUserId,
 	updateUser,
+	doesUserExist,
 };

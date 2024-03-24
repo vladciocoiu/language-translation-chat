@@ -9,22 +9,15 @@ const generateAccessToken = async (userId) =>
 
 exports.register = async (req, res) => {
 	// get info from req body
-	const { name, email, password } = req.body;
+	const { name, email, password } = req.validatedPayload;
 
 	// hash password
 	const hash = await bcrypt.hash(password, 10);
 
-	// create new user object
-	const newUser = {
-		name,
-		email,
-		password: hash,
-	};
-
 	// save new user and send id as json
 	let user;
 	try {
-		user = await createUser(newUser);
+		user = await createUser({ name, email, password: hash });
 	} catch (err) {
 		return res.status(400).json({ error: err });
 	}
@@ -34,7 +27,7 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
 	// get info from req body
-	const { email, password } = req.body;
+	const { email, password } = req.validatedPayload;
 
 	// check if user exists in db
 	let user;

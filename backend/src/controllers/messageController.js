@@ -22,7 +22,7 @@ exports.updateMessage = async (req, res) => {
 	const { messageId } = req.params;
 
 	// get info from req body
-	const { text } = req.body;
+	const { text } = req.validatedPayload;
 
 	// update message
 	let success;
