@@ -12,14 +12,17 @@ const {
 	getMessagesByConversationId,
 } = require("../services/messageService");
 
+// users can manually only create group conversations
 exports.createConversation = async (req, res) => {
 	// get info from req body
-	const { isGroup, name } = req.validatedPayload;
+	const { name } = req.validatedPayload;
+
+	const { userId } = req.user;
 
 	// save new conversation
 	let conversation;
 	try {
-		conversation = await createConversation({ isGroup, name });
+		conversation = await createConversation({ isGroup: true, name }, userId);
 	} catch (err) {
 		return res.status(400).json({ error: err });
 	}
@@ -107,7 +110,9 @@ exports.createMessage = async (req, res) => {
 	const { conversationId } = req.params;
 
 	// get info from req body
-	const { text, senderId } = req.validatedPayload;
+	const { text } = req.validatedPayload;
+
+	const senderId = req.user.userId;
 
 	// save new message
 	let message;

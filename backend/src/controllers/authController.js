@@ -5,7 +5,7 @@ const crypto = require("crypto");
 const { getUserByEmail, createUser } = require("../services/userService");
 
 const generateAccessToken = async (userId) =>
-	await jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: "2h" });
+	await jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: "24h" });
 
 exports.register = async (req, res) => {
 	// get info from req body

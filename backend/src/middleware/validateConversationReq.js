@@ -1,16 +1,11 @@
 const Joi = require("joi");
 
 const createConversationSchema = Joi.object({
-	isGroup: Joi.boolean().required(),
-	name: Joi.string().when("isGroup", {
-		is: true,
-		then: Joi.required(),
-		otherwise: Joi.optional(),
-	}),
+	name: Joi.string().trim().min(1).required(),
 });
 
 const updateConversationSchema = Joi.object({
-	name: Joi.string().required(),
+	name: Joi.string().trim().min(1).required(),
 });
 
 const addUserToConversationSchema = Joi.object({
@@ -18,8 +13,7 @@ const addUserToConversationSchema = Joi.object({
 });
 
 const createMessageSchema = Joi.object({
-	text: Joi.string().required(),
-	senderId: Joi.number().integer().positive().required(),
+	text: Joi.string().trim().min(1).required(),
 });
 
 exports.validateCreateConversation = (req, res, next) => {
