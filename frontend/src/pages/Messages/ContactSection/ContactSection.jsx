@@ -107,9 +107,7 @@ const ContactSection = ({ isOpen, setCardIsOpen }) => {
 						onClick={() => dispatch(change(contact))}
 					>
 						<ImageComponent
-							image={
-								contact.profilePicture || "public/images/default-profile-picture.jpg"
-							}
+							image={contact.profilePicture || "/images/default-profile-picture.jpg"}
 							contact={contact}
 							setCardIsOpen={setCardIsOpen}
 						/>

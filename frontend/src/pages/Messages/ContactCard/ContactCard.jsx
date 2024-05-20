@@ -35,8 +35,7 @@ const ContactCard = ({ setCardIsOpen }) => {
 			<img
 				className="profile-picture"
 				src={
-					openContact.contact.profilePicture ||
-					"public/images/default-profile-picture.jpg"
+					openContact.contact.profilePicture || "/images/default-profile-picture.jpg"
 				}
 				alt="profile picture"
 			/>
