@@ -3,12 +3,13 @@ import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-import { change } from "../../../components/CurrentContact";
 import MessageBubble from "../MessageBubble/MessageBubble.jsx";
 import "./ChatSection.css";
 
 const ChatSection = () => {
-	const currentContact = useSelector((state) => state.currentContact.value);
+	const currentConversation = useSelector(
+		(state) => state.currentConversation.value
+	);
 	const dispatch = useDispatch();
 	const auth = useSelector((state) => state.auth.value);
 
@@ -19,7 +20,7 @@ const ChatSection = () => {
 	async function getMessages() {
 		try {
 			const response = await axios.get(
-				`http://localhost:3000/api/users/${currentContact?.id}/messages?offset=0&limit=1000`,
+				`http://localhost:3000/api/conversations/${currentConversation?.id}/messages?offset=0&limit=1000`,
 				{
 					headers: {
 						Authorization: `Bearer ${auth.accessToken}`,
@@ -41,8 +42,8 @@ const ChatSection = () => {
 	}
 
 	useEffect(() => {
-		if (currentContact && currentContact.id) getMessages();
-	}, [currentContact]);
+		if (currentConversation && currentConversation.id) getMessages();
+	}, [currentConversation]);
 
 	const scrollToBottom = () => {
 		if (scrollableRef.current) {
@@ -62,10 +63,10 @@ const ChatSection = () => {
 		e.preventDefault();
 		if (!messageText) return;
 
-		if (!currentContact || !currentContact.id) return;
+		if (!currentConversation || !currentConversation.id) return;
 		try {
 			const response = await axios.post(
-				`http://localhost:3000/api/users/${currentContact.id}/messages`,
+				`http://localhost:3000/api/conversations/${currentConversation.id}/messages`,
 				{
 					text: messageText,
 				},
@@ -90,7 +91,9 @@ const ChatSection = () => {
 	return (
 		<div className="chat-section">
 			<div className="chat-section-header">
-				<p className="contact-name">{currentContact?.name}</p>
+				<p className="contact-name">
+					{currentConversation?.name || currentConversation?.recipient?.name}
+				</p>
 			</div>
 			<div className="message-list" ref={scrollableRef}>
 				{messages.map((message, index) => (

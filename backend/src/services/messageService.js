@@ -122,6 +122,18 @@ async function sendDirectMessage(senderId, receiverId, text) {
 	}
 }
 
+async function createMessageInConversation(messageData) {
+	const msg = await createMessage(messageData);
+
+	if (!msg) return false;
+
+	const message = await Message.findByPk(msg.id, {
+		include: User,
+	});
+
+	return new MessageDTO(message.dataValues);
+}
+
 async function getMessagesByReceiverId(senderId, receiverId, offset, limit) {
 	let conversation;
 	try {
@@ -165,5 +177,6 @@ module.exports = {
 	getMessagesByConversationId,
 	isUserSenderOfMessage,
 	sendDirectMessage,
+	createMessageInConversation,
 	getMessagesByReceiverId,
 };

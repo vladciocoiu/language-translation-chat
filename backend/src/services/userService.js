@@ -25,9 +25,12 @@ async function getUserByEmail(email) {
 async function getConversationsByUserId(userId) {
 	try {
 		const result = await User.findByPk(userId, {
-			include: Conversation,
+			include: {
+				model: Conversation,
+				include: User,
+			},
 		});
-		return result.Conversations.map(
+		return result.dataValues.Conversations.map(
 			(conversation) => new ConversationDTO(conversation.dataValues)
 		);
 	} catch (error) {
