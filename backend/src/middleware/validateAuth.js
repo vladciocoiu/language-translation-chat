@@ -5,11 +5,6 @@ const registerSchema = Joi.object({
 	name: Joi.string().trim().min(3).required(),
 	email: Joi.string().min(3).required().email(),
 	password: Joi.string().min(6).required(),
-	confirmPassword: Joi.valid(Joi.ref("password"))
-		.messages({
-			"any.only": "The 2 passwords do not match.",
-		})
-		.required(),
 });
 
 // validation schema for login form

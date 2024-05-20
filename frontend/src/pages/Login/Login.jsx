@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { changeUser, setLoggedIn } from "../../components/Auth";
+import { changeUser, setAccessToken, setLoggedIn } from "../../components/Auth";
+import { LoginRequest } from "./LoginRequest";
 import "./Login.css";
 
 const Login = () => {
+	const navigate = useNavigate();
+
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
@@ -22,21 +25,17 @@ const Login = () => {
 		setPassword(e.target.value);
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
-		// there should be a login request here but there is no backend yet so it will be mocked
 
-		const mockUser = {
-			email: "test@email",
-			password: "testpassword",
-		};
-
-		if (email === mockUser.email && password === mockUser.password) {
-			dispatch(changeUser(email));
+		try {
+			const response = await LoginRequest(email, password);
+			dispatch(changeUser({ email, userId: response.userId }));
+			dispatch(setAccessToken(response.accessToken));
 			dispatch(setLoggedIn(true));
 			navigate("/messages");
-		} else {
-			setError("Invalid credentials");
+		} catch (error) {
+			setError(error.message);
 		}
 	};
 

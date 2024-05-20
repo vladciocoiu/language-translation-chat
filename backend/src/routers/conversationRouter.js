@@ -51,7 +51,7 @@ router.post(
 	"/:conversationId/messages",
 	validateCreateMessage,
 	verifyUserInConversation,
-	conversationController.createMessage
+	conversationController.createMessageInConversation
 );
 
 module.exports = router;

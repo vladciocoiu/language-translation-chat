@@ -8,8 +8,9 @@ const {
 } = require("../services/conversationService");
 
 const {
-	createMessage,
+	createMessageInConversation,
 	getMessagesByConversationId,
+	getMessagesByReceiverId,
 } = require("../services/messageService");
 
 // users can manually only create group conversations
@@ -105,7 +106,7 @@ exports.removeUserFromConversation = async (req, res) => {
 	res.json({ success: true });
 };
 
-exports.createMessage = async (req, res) => {
+exports.createMessageInConversation = async (req, res) => {
 	// get info from req params
 	const { conversationId } = req.params;
 
@@ -117,14 +118,18 @@ exports.createMessage = async (req, res) => {
 	// save new message
 	let message;
 	try {
-		message = await createMessage({ text, senderId, conversationId });
+		message = await createMessageInConversation({
+			text,
+			senderId,
+			conversationId,
+		});
 	} catch (err) {
 		return res.status(500).json({ error: err });
 	}
 
 	if (!message) return res.status(400).json({ success: false });
 
-	res.json({ id: message.id });
+	res.json({ message });
 };
 
 exports.getMessagesByConversationId = async (req, res) => {
@@ -138,6 +143,26 @@ exports.getMessagesByConversationId = async (req, res) => {
 	let messages;
 	try {
 		messages = await getMessagesByConversationId(conversationId, offset, limit);
+	} catch (err) {
+		return res.status(500).json({ error: err });
+	}
+
+	if (!messages) return res.status(400).json({ success: false });
+
+	res.json({ messages });
+};
+
+exports.getMessagesByReceiverId = async (req, res) => {
+	// get offset and limit from query params (for pagination)
+	const { offset, limit } = req.query;
+
+	const { receiverId } = req.params;
+
+	const senderId = req.user.userId;
+
+	let messages;
+	try {
+		messages = await getMessagesByReceiverId(senderId, receiverId, offset, limit);
 	} catch (err) {
 		return res.status(500).json({ error: err });
 	}

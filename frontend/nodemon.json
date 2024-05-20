@@ -1,0 +1,6 @@
+{
+	"watch": ["src", "vite.config.js"],
+	"ext": "js,jsx,ts,tsx,css,html",
+	"ignore": ["node_modules"],
+	"exec": "vite"
+}

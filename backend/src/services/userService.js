@@ -25,9 +25,12 @@ async function getUserByEmail(email) {
 async function getConversationsByUserId(userId) {
 	try {
 		const result = await User.findByPk(userId, {
-			include: Conversation,
+			include: {
+				model: Conversation,
+				include: User,
+			},
 		});
-		return result.Conversations.map(
+		return result.dataValues.Conversations.map(
 			(conversation) => new ConversationDTO(conversation.dataValues)
 		);
 	} catch (error) {
@@ -35,13 +38,20 @@ async function getConversationsByUserId(userId) {
 	}
 }
 
-async function getUsersByNameOrEmail(query) {
+async function getUsersByNameOrEmail(query, userId) {
 	try {
 		const result = await User.findAll({
 			where: {
-				[Op.or]: [
-					{ name: { [Op.like]: `%${query}%` } },
-					{ email: { [Op.like]: `%${query}%` } },
+				[Op.and]: [
+					{
+						[Op.or]: [
+							{ name: { [Op.like]: `%${query}%` } },
+							{ email: { [Op.like]: `%${query}%` } },
+						],
+					},
+					{
+						id: { [Op.not]: userId },
+					},
 				],
 			},
 		});

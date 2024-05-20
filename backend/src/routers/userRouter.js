@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const userController = require("../controllers/userController");
+const conversationController = require("../controllers/conversationController");
 const {
 	validateUpdateUser,
 	validateSendDM,
@@ -20,6 +21,11 @@ router.get(
 	"/:userId/conversations",
 	verifyUserId,
 	userController.getConversationsByUserId
+);
+
+router.get(
+	"/:receiverId/messages",
+	conversationController.getMessagesByReceiverId
 );
 
 router.post(

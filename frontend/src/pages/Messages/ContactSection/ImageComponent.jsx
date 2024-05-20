@@ -1,14 +1,17 @@
 import React from "react";
-import { changeCoords, changeContact } from "../../../components/OpenContact";
+import {
+	changeCoords,
+	changeConversation,
+} from "../../../components/OpenConversation";
 import { useDispatch } from "react-redux";
 
-const ImageComponent = ({ image, contact, setCardIsOpen }) => {
+const ImageComponent = ({ image, conversation, setCardIsOpen }) => {
 	const dispatch = useDispatch();
 
-	const updateOpenContact = (e) => {
+	const updateOpenConversation = (e) => {
 		e.stopPropagation();
 		dispatch(changeCoords({ left: e.clientX, top: e.clientY }));
-		dispatch(changeContact(contact));
+		dispatch(changeConversation(conversation));
 		setCardIsOpen(true);
 	};
 
@@ -17,7 +20,7 @@ const ImageComponent = ({ image, contact, setCardIsOpen }) => {
 			className="profile-picture"
 			src={image}
 			alt="profile picture"
-			onClick={updateOpenContact}
+			onClick={updateOpenConversation}
 		/>
 	);
 };

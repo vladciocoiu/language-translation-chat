@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ChatSection from "./ChatSection/ChatSection.jsx";
 import ContactSection from "./ContactSection/ContactSection.jsx";
-import ContactCard from "./ContactCard/ContactCard.jsx";
+import ConversationCard from "./ConversationCard/ConversationCard.jsx";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
@@ -23,7 +23,7 @@ const Messages = () => {
 				setCardIsOpen={setCardIsOpen}
 			/>
 			<ChatSection />
-			{cardIsOpen && <ContactCard setCardIsOpen={setCardIsOpen} />}
+			{cardIsOpen && <ConversationCard setCardIsOpen={setCardIsOpen} />}
 			<button
 				className={
 					"contact-section-toggle icon-button" +

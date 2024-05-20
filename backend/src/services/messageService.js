@@ -62,9 +62,10 @@ async function getMessagesByConversationId(conversationId, offset, limit) {
 			offset: parseInt(offset),
 			limit: parseInt(limit),
 		});
-
 		return result.map((message) => new MessageDTO(message.dataValues));
 	} catch (error) {
+		console.log(error);
+
 		throw new Error("Error fetching messages by conversation id: ", error);
 	}
 }
@@ -85,7 +86,7 @@ async function sendDirectMessage(senderId, receiverId, text) {
 	if (senderId === receiverId) return false;
 
 	try {
-		const conversation = await Conversation.findOne({
+		let conversation = await Conversation.findOne({
 			where: { isGroup: false },
 			include: [
 				{
@@ -100,21 +101,73 @@ async function sendDirectMessage(senderId, receiverId, text) {
 		});
 
 		if (!conversation) {
-			const newConversation = await Conversation.create({ isGroup: false });
-			await newConversation.addUser(senderId);
-			await newConversation.addUser(receiverId);
+			conversation = await Conversation.create({ isGroup: false });
+			await conversation.addUser(senderId);
+			await conversation.addUser(receiverId);
 		}
 
-		await createMessage({
+		const message = await createMessage({
 			text,
 			senderId,
 			conversationId: conversation.id,
 		});
+
+		const DBMessage = await Message.findByPk(message.id, {
+			include: User,
+		});
+
+		return new MessageDTO(DBMessage.dataValues);
 	} catch (error) {
 		throw new Error("Error sending direct message");
 	}
+}
 
-	return true;
+async function createMessageInConversation(messageData) {
+	const msg = await createMessage(messageData);
+
+	if (!msg) return false;
+
+	const message = await Message.findByPk(msg.id, {
+		include: User,
+	});
+
+	return new MessageDTO(message.dataValues);
+}
+
+async function getMessagesByReceiverId(senderId, receiverId, offset, limit) {
+	let conversation;
+	try {
+		conversation = await Conversation.findOne({
+			where: {
+				isGroup: false,
+			},
+			include: [
+				{
+					model: User,
+					where: { id: senderId },
+				},
+				{
+					model: User,
+					where: { id: receiverId },
+				},
+			],
+		});
+	} catch (err) {
+		throw new Error("Error fetching conversation by receiver id");
+	}
+
+	if (!conversation) return [];
+
+	let messages;
+	try {
+		messages = await getMessagesByConversationId(conversation.id, offset, limit);
+	} catch (err) {
+		throw new Error("Error fetching conversation by receiver id");
+	}
+
+	if (!messages) return [];
+
+	return messages;
 }
 
 module.exports = {
@@ -124,4 +177,6 @@ module.exports = {
 	getMessagesByConversationId,
 	isUserSenderOfMessage,
 	sendDirectMessage,
+	createMessageInConversation,
+	getMessagesByReceiverId,
 };
