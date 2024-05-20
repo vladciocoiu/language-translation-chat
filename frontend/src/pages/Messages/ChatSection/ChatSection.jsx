@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { change } from "../../../components/CurrentContact";
@@ -9,30 +10,39 @@ import "./ChatSection.css";
 const ChatSection = () => {
 	const currentContact = useSelector((state) => state.currentContact.value);
 	const dispatch = useDispatch();
+	const auth = useSelector((state) => state.auth.value);
 
 	const [messages, setMessages] = useState([]);
 	const [messageText, setMessageText] = useState("");
 	const scrollableRef = useRef();
 
+	async function getMessages() {
+		try {
+			const response = await axios.get(
+				`http://localhost:3000/api/users/${currentContact?.id}/messages?offset=0&limit=1000`,
+				{
+					headers: {
+						Authorization: `Bearer ${auth.accessToken}`,
+					},
+				}
+			);
+			if (response.status !== 200) {
+				console.error(new Error("Failed to get messages"));
+
+				return [];
+			} else {
+				setMessages(response.data.messages);
+			}
+			return response.data.messages;
+		} catch (error) {
+			console.error(error);
+			return [];
+		}
+	}
+
 	useEffect(() => {
-		setMessages([
-			{
-				id: 1,
-				timestamp: "2021-01-01T00:00:00.000Z",
-				senderId: 1,
-				receiverId: 0,
-				text: `Hi, my name is ${currentContact?.name}!`,
-			},
-			{
-				id: 2,
-				timestamp: "2023-02-01T00:00:00.000Z",
-				senderId: 0,
-				receiverId: 1,
-				text: "Hello, how are you?",
-			},
-		]);
+		if (currentContact && currentContact.id) getMessages();
 	}, [currentContact]);
-	// TODO: add backend request
 
 	const scrollToBottom = () => {
 		if (scrollableRef.current) {
@@ -48,18 +58,32 @@ const ChatSection = () => {
 		setMessageText(e.target.value);
 	};
 
-	const handleSendMessage = (e) => {
+	const handleSendMessage = async (e) => {
 		e.preventDefault();
 		if (!messageText) return;
 
-		const newMessage = {
-			id: messages.length + 1,
-			timestamp: new Date().toISOString(),
-			senderId: 0,
-			receiverId: 1,
-			text: messageText,
-		};
-		setMessages([...messages, newMessage]); // here there should be a request to the server
+		if (!currentContact || !currentContact.id) return;
+		try {
+			const response = await axios.post(
+				`http://localhost:3000/api/users/${currentContact.id}/messages`,
+				{
+					text: messageText,
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${auth.accessToken}`,
+					},
+				}
+			);
+			if (response.status !== 200) return;
+
+			const responseMessage = response.data.message;
+			setMessages([...messages, responseMessage]);
+		} catch (error) {
+			console.error(error);
+			return;
+		}
+
 		setMessageText("");
 	};
 

@@ -35,13 +35,20 @@ async function getConversationsByUserId(userId) {
 	}
 }
 
-async function getUsersByNameOrEmail(query) {
+async function getUsersByNameOrEmail(query, userId) {
 	try {
 		const result = await User.findAll({
 			where: {
-				[Op.or]: [
-					{ name: { [Op.like]: `%${query}%` } },
-					{ email: { [Op.like]: `%${query}%` } },
+				[Op.and]: [
+					{
+						[Op.or]: [
+							{ name: { [Op.like]: `%${query}%` } },
+							{ email: { [Op.like]: `%${query}%` } },
+						],
+					},
+					{
+						id: { [Op.not]: userId },
+					},
 				],
 			},
 		});

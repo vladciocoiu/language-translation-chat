@@ -10,6 +10,7 @@ const {
 const {
 	createMessage,
 	getMessagesByConversationId,
+	getMessagesByReceiverId,
 } = require("../services/messageService");
 
 // users can manually only create group conversations
@@ -138,6 +139,26 @@ exports.getMessagesByConversationId = async (req, res) => {
 	let messages;
 	try {
 		messages = await getMessagesByConversationId(conversationId, offset, limit);
+	} catch (err) {
+		return res.status(500).json({ error: err });
+	}
+
+	if (!messages) return res.status(400).json({ success: false });
+
+	res.json({ messages });
+};
+
+exports.getMessagesByReceiverId = async (req, res) => {
+	// get offset and limit from query params (for pagination)
+	const { offset, limit } = req.query;
+
+	const { receiverId } = req.params;
+
+	const senderId = req.user.userId;
+
+	let messages;
+	try {
+		messages = await getMessagesByReceiverId(senderId, receiverId, offset, limit);
 	} catch (err) {
 		return res.status(500).json({ error: err });
 	}

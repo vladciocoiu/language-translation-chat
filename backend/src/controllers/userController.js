@@ -27,10 +27,12 @@ exports.getUsersByNameOrEmail = async (req, res) => {
 	// get info from req query
 	const { query } = req.query;
 
+	const userId = req.user.userId;
+
 	// get users by name or email
 	let users;
 	try {
-		users = await getUsersByNameOrEmail(query);
+		users = await getUsersByNameOrEmail(query, userId);
 	} catch (err) {
 		return res.status(500).json({ error: err });
 	}
@@ -67,15 +69,15 @@ exports.sendDirectMessage = async (req, res) => {
 
 	const senderId = req.user.userId;
 
-	let success;
+	let message;
 	try {
-		success = await sendDirectMessage(senderId, userId, text);
+		message = await sendDirectMessage(senderId, userId, text);
 	} catch (err) {
 		return res.status(500).json({ error: err });
 	}
 
-	if (!success)
+	if (!message)
 		return res.status(400).json({ error: "Error sending direct message." });
 
-	res.json({ success: true });
+	res.json({ message });
 };

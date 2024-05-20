@@ -13,7 +13,6 @@ export const RegisterRequest = async (email, displayName, password) => {
 				typeof response.data?.error === "string"
 					? response.data.error
 					: "Failed to register user";
-			console.log(typeof response.data?.error);
 			throw new Error(message);
 		}
 
