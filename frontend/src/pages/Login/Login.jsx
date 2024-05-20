@@ -25,6 +25,7 @@ const Login = () => {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		// there should be a login request here but there is no backend yet so it will be mocked
+		// TODO: add backend request
 
 		const mockUser = {
 			email: "test@email",

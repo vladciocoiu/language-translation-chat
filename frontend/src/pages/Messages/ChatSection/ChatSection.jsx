@@ -32,6 +32,7 @@ const ChatSection = () => {
 			},
 		]);
 	}, [currentContact]);
+	// TODO: add backend request
 
 	const scrollToBottom = () => {
 		if (scrollableRef.current) {

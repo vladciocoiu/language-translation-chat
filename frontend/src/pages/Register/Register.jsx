@@ -1,9 +1,12 @@
 import React, { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { RegisterRequest } from "./RegisterRequest";
 import "./Register.css";
 
 const Register = () => {
+	const navigate = useNavigate();
+
 	const [email, setEmail] = useState("");
 	const [displayName, setDisplayName] = useState("");
 	const [password, setPassword] = useState("");
@@ -23,9 +26,15 @@ const Register = () => {
 		setPassword(e.target.value);
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
-		// TODO: Implement registration logic
+
+		try {
+			await RegisterRequest(email, displayName, password);
+			navigate("/login");
+		} catch (error) {
+			setError(error.message);
+		}
 	};
 
 	if (auth.isLoggedIn) return <Navigate to="/messages" />;

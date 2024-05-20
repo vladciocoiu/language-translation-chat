@@ -85,6 +85,7 @@ const ContactSection = ({ isOpen, setCardIsOpen }) => {
 			profilePicture: "",
 		},
 	];
+	// TODO: add backend request
 	const [contacts, setContacts] = useState(mockContacts);
 
 	useEffect(() => {
