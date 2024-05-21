@@ -46,7 +46,8 @@ async function getUsersByNameOrEmail(query, userId) {
 					{
 						[Op.or]: [
 							{ name: { [Op.like]: `%${query}%` } },
-							{ email: { [Op.like]: `%${query}%` } },
+							{ email: { [Op.like]: `%${query}%@%` } },
+							{ email: query },
 						],
 					},
 					{

@@ -5,35 +5,46 @@
   background-color: var(--color-primary);
 }
 
-.contact-section-toggle {
+.contact-section-toggle,
+.search-section-toggle {
   margin: 20px;
   position: absolute;
   top: 0;
 }
 
-.contact-section-toggle.open {
+.search-section-toggle {
+  margin-left: 80px;
+}
+
+.contact-section-toggle.open,
+.search-section-toggle.open {
   left: 360px;
 }
 
-.contact-section-toggle.closed {
+.contact-section-toggle.closed,
+.search-section-toggle.closed {
   left: 0;
 }
 
 @media screen and (max-width: 1024px) {
-  .contact-section-toggle.open {
+  .contact-section-toggle.open,
+  .search-section-toggle.open {
     left: 50vw;
   }
 }
 @media screen and (max-width: 768px) {
-  .contact-section-toggle.open {
+  .contact-section-toggle.open,
+  .search-section-toggle.open {
     left: calc(100vw - 80px);
   }
-  .contact-section-toggle.icon-button {
+  .contact-section-toggle.icon-button,
+  .search-section-toggle.icon-button {
     background: none;
   }
 }
 @media screen and (max-width: 600px) {
-  .icon-button.contact-section-toggle svg {
+  .icon-button.contact-section-toggle svg,
+  .icon-button.search-section-toggle svg {
     width: 20px;
     height: 20px;
   }
