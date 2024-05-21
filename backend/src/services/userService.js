@@ -1,4 +1,9 @@
 const { Op } = require("sequelize");
+const { v4: uuidv4 } = require("uuid");
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
+
+require("dotenv").config();
 
 const User = require("../models/user");
 const Conversation = require("../models/conversation");
@@ -6,9 +11,41 @@ const Conversation = require("../models/conversation");
 const ConversationDTO = require("../dtos/conversationDTO");
 const UserDTO = require("../dtos/userDTO");
 
-async function createUser(userData) {
+async function sendVerificationEmail(user) {
+	const transporter = nodemailer.createTransport({
+		service: "gmail",
+		auth: {
+			user: process.env.EMAIL_USER,
+			pass: process.env.EMAIL_PASS,
+		},
+	});
+
+	const mailOptions = {
+		from: process.env.EMAIL_USER,
+		to: user.email,
+		subject: "Verify Your Email",
+		text: `Click this link to verify your email: http://localhost:5173/verify?token=${user.verificationToken}`,
+	};
+
 	try {
-		return await User.create(userData);
+		await transporter.sendMail(mailOptions);
+		return true;
+	} catch (error) {
+		console.log(error);
+		return false;
+	}
+}
+
+function generateVerificationToken() {
+	const uniqueID = uuidv4();
+	const hash = crypto.createHash("sha256").update(uniqueID).digest("hex");
+	return hash.slice(0, 32);
+}
+
+async function createUser(userData) {
+	const user = { ...userData, verificationToken: generateVerificationToken() };
+	try {
+		return await User.create(user);
 	} catch (error) {
 		throw new Error("Error creating user");
 	}
@@ -19,6 +56,14 @@ async function getUserByEmail(email) {
 		return await User.findOne({ where: { email } });
 	} catch (error) {
 		throw new Error("Error fetching user by email");
+	}
+}
+
+async function getUserByVerificationToken(token) {
+	try {
+		return await User.findOne({ where: { verificationToken: token } });
+	} catch (error) {
+		throw new Error("Error fetching user by verification token");
 	}
 }
 
@@ -53,6 +98,9 @@ async function getUsersByNameOrEmail(query, userId) {
 					{
 						id: { [Op.not]: userId },
 					},
+					{
+						isVerified: true,
+					},
 				],
 			},
 		});
@@ -65,7 +113,7 @@ async function getUsersByNameOrEmail(query, userId) {
 async function updateUser(userId, userData) {
 	try {
 		const user = await User.findByPk(userId);
-		if (!user) return false;
+		if (!user || !user.isVerified) return false;
 
 		await user.update(userData);
 		return true;
@@ -87,8 +135,10 @@ async function doesUserExist(userId) {
 module.exports = {
 	createUser,
 	getUserByEmail,
+	getUserByVerificationToken,
 	getUsersByNameOrEmail,
 	getConversationsByUserId,
 	updateUser,
 	doesUserExist,
+	sendVerificationEmail,
 };

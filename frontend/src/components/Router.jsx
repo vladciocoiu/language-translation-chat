@@ -3,6 +3,7 @@ import Messages from "../pages/Messages/Messages";
 import Home from "../pages/Home/Home";
 import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
+import Verify from "../pages/Verify/Verify";
 import PrivateRoute from "./PrivateRoute";
 
 const publicPagesData = [
@@ -20,6 +21,11 @@ const publicPagesData = [
 		path: "register",
 		element: <Register />,
 		title: "Register",
+	},
+	{
+		path: "verify",
+		element: <Verify />,
+		title: "Verify",
 	},
 ];
 
