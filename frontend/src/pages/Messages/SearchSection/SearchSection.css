@@ -1,0 +1,90 @@
+.search-section {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100vh;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  position: relative;
+  transition: 0.07s ease-in-out;
+  background-color: var(--color-primary);
+  z-index: 10;
+}
+.search-section form {
+  flex: 1;
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--color-primary-2);
+  color: white;
+  width: 100%;
+  height: 50px;
+}
+.search-section .search-input {
+  box-sizing: border-box;
+  background-color: var(--color-primary);
+  border: none;
+  padding: 0 20px;
+  color: white;
+  font-size: 16px;
+  width: 100%;
+  height: 100%;
+}
+.search-section .user-list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  width: 100%;
+  flex: 10;
+  overflow-y: scroll;
+}
+.search-section .user-list .search-user {
+  padding: 20px;
+  height: 50px;
+  display: grid;
+  grid-template-areas: "pic name btn" "pic email btn";
+  grid-template-columns: 40px 1fr 60px;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+}
+.search-section .user-list .user-name {
+  margin: 0;
+  grid-area: name;
+}
+.search-section .user-list .user-email {
+  margin: 0;
+  font-size: 14px;
+  grid-area: email;
+}
+.search-section .user-list .start-conversation-button {
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  grid-area: btn;
+  background: none;
+  border: none;
+  transition: 0.07s ease-in-out;
+}
+.search-section .user-list .start-conversation-button svg {
+  width: 25px;
+  height: 25px;
+}
+.search-section .user-list .start-conversation-button:hover {
+  color: var(--color-secondary-2);
+}
+.search-section .user-list .user-profile-picture {
+  grid-area: pic;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.search-section.open {
+  width: 360px;
+}
+
+.search-section.closed {
+  width: 0;
+}/*# sourceMappingURL=SearchSection.css.map */

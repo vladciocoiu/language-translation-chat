@@ -5,7 +5,12 @@ import "./ContactSection.css";
 import { change } from "../../../components/CurrentConversation";
 import ImageComponent from "./ImageComponent";
 
-const ContactSection = ({ isOpen, setCardIsOpen }) => {
+const ContactSection = ({
+	isOpen,
+	setCardIsOpen,
+	refreshConversations,
+	setRefreshConversations,
+}) => {
 	const currentConversation = useSelector(
 		(state) => state.currentConversation.value
 	);
@@ -46,7 +51,8 @@ const ContactSection = ({ isOpen, setCardIsOpen }) => {
 
 	useEffect(() => {
 		getConversations();
-	}, []);
+		setRefreshConversations(false);
+	}, [refreshConversations]);
 
 	useEffect(() => {
 		dispatch(change(conversations[0]));

@@ -6,11 +6,10 @@ import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import MessageBubble from "../MessageBubble/MessageBubble.jsx";
 import "./ChatSection.css";
 
-const ChatSection = () => {
+const ChatSection = ({ setRefreshConversations }) => {
 	const currentConversation = useSelector(
 		(state) => state.currentConversation.value
 	);
-	const dispatch = useDispatch();
 	const auth = useSelector((state) => state.auth.value);
 
 	const [messages, setMessages] = useState([]);
@@ -63,7 +62,10 @@ const ChatSection = () => {
 		e.preventDefault();
 		if (!messageText) return;
 
-		if (!currentConversation || !currentConversation.id) return;
+		if (!currentConversation) return;
+
+		if (!currentConversation.id) return handleCreateConversation(e);
+
 		try {
 			const response = await axios.post(
 				`http://localhost:3000/api/conversations/${currentConversation.id}/messages`,
@@ -80,6 +82,41 @@ const ChatSection = () => {
 
 			const responseMessage = response.data.message;
 			setMessages([...messages, responseMessage]);
+		} catch (error) {
+			console.error(error);
+			return;
+		}
+
+		setMessageText("");
+	};
+
+	const handleCreateConversation = async (e) => {
+		e.preventDefault();
+		if (!messageText) return;
+
+		if (
+			!currentConversation ||
+			!currentConversation.recipient ||
+			!currentConversation.recipient.id
+		)
+			return;
+		try {
+			const response = await axios.post(
+				`http://localhost:3000/api/users/${currentConversation.recipient.id}/messages`,
+				{
+					text: messageText,
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${auth.accessToken}`,
+					},
+				}
+			);
+			if (response.status !== 200) return;
+
+			const responseMessage = response.data.message;
+			setMessages([...messages, responseMessage]);
+			setRefreshConversations(true);
 		} catch (error) {
 			console.error(error);
 			return;
