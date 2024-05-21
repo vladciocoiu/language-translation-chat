@@ -45,6 +45,10 @@ DB_URL=
 
 // secret for generating the JWTs (a random sequence of 64 bytes in hex)
 JWT_SECRET=
+
+// email credentials
+EMAIL_USER=
+EMAIL_PASS=
 ```
 
 - Install npm dependencies:

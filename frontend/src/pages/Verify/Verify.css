@@ -1,0 +1,11 @@
+.verify-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+}
+.verify-page h1 {
+  font-size: 32px;
+}/*# sourceMappingURL=Verify.css.map */

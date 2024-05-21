@@ -10,5 +10,6 @@ const {
 
 router.post("/register", validateRegister, authController.register);
 router.post("/login", validateLogin, authController.login);
+router.get("/verify", authController.verify);
 
 module.exports = router;

@@ -16,6 +16,14 @@ const User = sequelize.define("User", {
 		type: DataTypes.STRING,
 		allowNull: false,
 	},
+	isVerified: {
+		type: DataTypes.BOOLEAN,
+		defaultValue: false,
+	},
+	verificationToken: {
+		type: DataTypes.STRING,
+		allowNull: false,
+	},
 });
 
 // Sync the model with the database (creates the table if it doesn't exist)
