@@ -138,7 +138,7 @@ const ChatSection = ({ setRefreshConversations }) => {
 			</div>
 			<div className="message-list" ref={scrollableRef}>
 				{messages.map((message, index) => (
-					<MessageBubble key={index} message={message} />
+					<MessageBubble key={index} message={message} setMessages={setMessages} />
 				))}
 			</div>
 			<form className="message-input" onSubmit={handleSendMessage}>
