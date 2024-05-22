@@ -24,6 +24,15 @@ const User = sequelize.define("User", {
 		type: DataTypes.STRING,
 		allowNull: false,
 	},
+	language: {
+		type: DataTypes.ENUM,
+		values: ["en", "fr", "it", "ro"],
+		allowNull: false,
+		defaultValue: "en",
+	},
+	profilePicture: {
+		type: DataTypes.STRING,
+	},
 });
 
 // Sync the model with the database (creates the table if it doesn't exist)
