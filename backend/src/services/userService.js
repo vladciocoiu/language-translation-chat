@@ -1,6 +1,7 @@
 const { Op } = require("sequelize");
 const { v4: uuidv4 } = require("uuid");
 const crypto = require("crypto");
+const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 
 require("dotenv").config();
@@ -47,6 +48,7 @@ async function createUser(userData) {
 	try {
 		return await User.create(user);
 	} catch (error) {
+		console.log(error);
 		throw new Error("Error creating user");
 	}
 }
@@ -110,12 +112,24 @@ async function getUsersByNameOrEmail(query, userId) {
 	}
 }
 
+async function hashPassword(password) {
+	return await bcrypt.hash(password, 10);
+}
+
 async function updateUser(userId, userData) {
+	const fieldsToUpdate = ["name", "language"];
+	const filteredUserData = Object.fromEntries(
+		Object.entries(userData).filter(([key]) => fieldsToUpdate.includes(key))
+	);
+	if (userData.password) {
+		filteredUserData.password = hashPassword(userData.password);
+	}
+
 	try {
 		const user = await User.findByPk(userId);
 		if (!user || !user.isVerified) return false;
 
-		await user.update(userData);
+		await user.update(filteredUserData);
 		return true;
 	} catch (error) {
 		throw new Error("Error updating user");
