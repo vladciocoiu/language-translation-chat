@@ -122,7 +122,7 @@ async function updateUser(userId, userData) {
 		Object.entries(userData).filter(([key]) => fieldsToUpdate.includes(key))
 	);
 	if (userData.password) {
-		filteredUserData.password = hashPassword(userData.password);
+		filteredUserData.password = await hashPassword(userData.password);
 	}
 
 	try {
@@ -155,4 +155,5 @@ module.exports = {
 	updateUser,
 	doesUserExist,
 	sendVerificationEmail,
+	hashPassword,
 };
