@@ -12,6 +12,7 @@ export const authSlice = createSlice({
 			reducer(state, action) {
 				state.value.email = action.payload.email;
 				state.value.userId = action.payload.userId;
+				state.value.language = action.payload.language;
 			},
 		},
 		setAccessToken: {

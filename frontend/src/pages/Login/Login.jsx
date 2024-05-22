@@ -30,7 +30,9 @@ const Login = () => {
 
 		try {
 			const response = await LoginRequest(email, password);
-			dispatch(changeUser({ email, userId: response.userId }));
+			dispatch(
+				changeUser({ email, userId: response.userId, language: response.language })
+			);
 			dispatch(setAccessToken(response.accessToken));
 			dispatch(setLoggedIn(true));
 			navigate("/messages");

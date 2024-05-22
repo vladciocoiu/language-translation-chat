@@ -7,6 +7,7 @@ const {
 	getUserByVerificationToken,
 	createUser,
 	sendVerificationEmail,
+	hashPassword,
 } = require("../services/userService");
 
 const generateAccessToken = async (userId) =>
@@ -17,7 +18,7 @@ exports.register = async (req, res) => {
 	const { name, email, password } = req.validatedPayload;
 
 	// hash password
-	const hash = await bcrypt.hash(password, 10);
+	const hash = await hashPassword(password);
 
 	// save new user and send id as json
 	let user;
@@ -65,7 +66,7 @@ exports.login = async (req, res) => {
 	// add token to response header
 	res.header("authentication", "Bearer " + accessToken);
 
-	res.json({ accessToken, userId: user.id });
+	res.json({ accessToken, userId: user.id, language: user.language });
 };
 
 exports.verify = async (req, res) => {

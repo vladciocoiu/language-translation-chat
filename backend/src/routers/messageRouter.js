@@ -16,5 +16,6 @@ router.put(
 	verifyMessageSender,
 	messageController.updateMessage
 );
+router.post("/:messageId/translate", messageController.translateMessage);
 
 module.exports = router;

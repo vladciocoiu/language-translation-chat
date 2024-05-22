@@ -17,15 +17,15 @@ const ChatSection = ({ setRefreshConversations }) => {
 	const scrollableRef = useRef();
 
 	async function getMessages() {
+		const url = currentConversation.id
+			? `http://localhost:3000/api/conversations/${currentConversation.id}/messages?offset=0&limit=1000`
+			: `http://localhost:3000/api/users/${currentConversation.recipient.id}/messages?offset=0&limit=1000`;
 		try {
-			const response = await axios.get(
-				`http://localhost:3000/api/conversations/${currentConversation?.id}/messages?offset=0&limit=1000`,
-				{
-					headers: {
-						Authorization: `Bearer ${auth.accessToken}`,
-					},
-				}
-			);
+			const response = await axios.get(url, {
+				headers: {
+					Authorization: `Bearer ${auth.accessToken}`,
+				},
+			});
 			if (response.status !== 200) {
 				console.error(new Error("Failed to get messages"));
 
@@ -41,7 +41,11 @@ const ChatSection = ({ setRefreshConversations }) => {
 	}
 
 	useEffect(() => {
-		if (currentConversation && currentConversation.id) getMessages();
+		if (
+			currentConversation &&
+			(currentConversation.id || currentConversation.recipient)
+		)
+			getMessages();
 	}, [currentConversation]);
 
 	const scrollToBottom = () => {
@@ -134,7 +138,7 @@ const ChatSection = ({ setRefreshConversations }) => {
 			</div>
 			<div className="message-list" ref={scrollableRef}>
 				{messages.map((message, index) => (
-					<MessageBubble key={index} message={message} />
+					<MessageBubble key={index} message={message} setMessages={setMessages} />
 				))}
 			</div>
 			<form className="message-input" onSubmit={handleSendMessage}>
