@@ -1,6 +1,10 @@
 const Message = require("../models/message");
 const User = require("../models/user");
 const Conversation = require("../models/conversation");
+const DetectLanguage = require("detectlanguage");
+const axios = require("axios");
+
+require("dotenv").config();
 
 const MessageDTO = require("../dtos/messageDTO");
 
@@ -170,6 +174,50 @@ async function getMessagesByReceiverId(senderId, receiverId, offset, limit) {
 	return messages;
 }
 
+// detect language of message
+// first try to detect language using detectlanguage API
+// if it fails, consider the language of the sender
+async function detectMessageLanguage(messageId) {
+	const detectlanguage = new DetectLanguage(process.env.DETECTLANGUAGE_API_KEY);
+
+	const message = await Message.findByPk(messageId);
+	if (!message) return false;
+
+	try {
+		const response = await detectlanguage.detectCode(message.text);
+		if (!response) throw new Error("Error detecting language from API.");
+		return JSON.stringify(response).replace(/"/g, "");
+	} catch (error) {
+		try {
+			const sender = await User.findByPk(message.senderId);
+			console.log(
+				`Failed to detect language for messageId=${message.id}. Will consider it as ${sender.language}.`
+			);
+			return sender.language;
+		} catch (error) {
+			throw new Error("Error fetching sender by message id");
+		}
+	}
+}
+
+async function translateMessage(messageId, targetLanguage, messageLanguage) {
+	const message = await Message.findByPk(messageId);
+	if (!message) return false;
+
+	// if the message is already in the target language, no need to translate
+	if (messageLanguage === targetLanguage) return message.text;
+
+	try {
+		const url = `https://api.mymemory.translated.net/get?q=${message.text}&langpair=${messageLanguage}|${targetLanguage}&de=${process.env.EMAIL_USER}`;
+		const response = await axios.get(url);
+		const translatedText = response.data.responseData.translatedText;
+		return translatedText;
+	} catch (error) {
+		console.log(error);
+		throw new Error("Error translating message");
+	}
+}
+
 module.exports = {
 	createMessage,
 	deleteMessage,
@@ -179,4 +227,6 @@ module.exports = {
 	sendDirectMessage,
 	createMessageInConversation,
 	getMessagesByReceiverId,
+	translateMessage,
+	detectMessageLanguage,
 };

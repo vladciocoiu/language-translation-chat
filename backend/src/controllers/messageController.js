@@ -1,4 +1,9 @@
-const { deleteMessage, updateMessage } = require("../services/messageService");
+const {
+	deleteMessage,
+	updateMessage,
+	translateMessage,
+	detectMessageLanguage,
+} = require("../services/messageService");
 
 exports.deleteMessage = async (req, res) => {
 	// get info from req params
@@ -35,4 +40,29 @@ exports.updateMessage = async (req, res) => {
 	if (!success) return res.status(400).json({ error: "Message not found" });
 
 	res.json({ success: true });
+};
+
+exports.translateMessage = async (req, res) => {
+	const { messageId } = req.params;
+	const { targetLanguage } = req.body;
+
+	let messageLanguage;
+	try {
+		messageLanguage = await detectMessageLanguage(messageId);
+	} catch (err) {
+		return res
+			.status(400)
+			.json({ error: `Cannot detect message language: ${err}` });
+	}
+
+	try {
+		const translatedText = await translateMessage(
+			messageId,
+			targetLanguage,
+			messageLanguage
+		);
+		res.json({ messageLanguage, translatedText });
+	} catch (err) {
+		return res.status(500).json({ error: err });
+	}
 };

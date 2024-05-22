@@ -49,6 +49,9 @@ JWT_SECRET=
 // email credentials
 EMAIL_USER=
 EMAIL_PASS=
+
+// API key for [DetectLanguage](https://detectlanguage.com/)
+DETECTLANGUAGE_API_KEY=
 ```
 
 - Install npm dependencies:
