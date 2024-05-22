@@ -1,14 +1,19 @@
 # PolyChat
 
-This is a chat app ~~that automatically translates messages in your language~~, where people can send each other direct messages, or text in group chats
+This is a chat app that automatically translates messages in your preferred language, where people can send each other direct messages, or text in group chats
+
+For translation it makes use of 2 public, free APIs:
+
+- [DetectLanguage](https://detectlanguage.com/) for language detection
+- [MyMemory](https://mymemory.translated.net/) for actual translation
 
 ## Local set-up
 
-- First you need to clone this Github repository
+- First you need to clone this GitHub repository
 
 #### Frontend
 
-- Install npm dependencies:
+- Install NPM dependencies:
 
 ```
 npm install
@@ -50,11 +55,11 @@ JWT_SECRET=
 EMAIL_USER=
 EMAIL_PASS=
 
-// API key for [DetectLanguage](https://detectlanguage.com/)
+// API key for DetectLanguage
 DETECTLANGUAGE_API_KEY=
 ```
 
-- Install npm dependencies:
+- Install NPM dependencies:
 
 ```
 npm install
