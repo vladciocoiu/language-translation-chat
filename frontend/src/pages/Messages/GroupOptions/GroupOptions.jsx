@@ -1,45 +1,123 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import axios from "axios";
 import { change } from "../../../components/CurrentConversation";
-import "./GroupOptions.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
+import "./GroupOptions.css";
 
-const GroupOptions = ({ setIsOpen }) => {
+const GroupOptions = ({ setIsOpen, setRefreshConversations }) => {
 	const currentConversation = useSelector(
 		(state) => state.currentConversation.value
 	);
+	const auth = useSelector((state) => state.auth.value);
 	const dispatch = useDispatch();
-	const members = [
-		{ id: 1, name: "User1", email: "user1@abc.com" },
-		{ id: 2, name: "User2", email: "user2@abc.com" },
-		{ id: 3, name: "User3", email: "user3@abc.com" },
-		{ id: 4, name: "User4", email: "user4@abc.com" },
-		{ id: 5, name: "User5", email: "user5@abc.com" },
-		{ id: 6, name: "User6", email: "user6@abc.com" },
-		{ id: 7, name: "User7", email: "user7@abc.com" },
-		{ id: 8, name: "User8", email: "user8@abc.com" },
-		{ id: 9, name: "User9", email: "user9@abc.com" },
-		{ id: 10, name: "User10", email: "user10@abc.com" },
-	];
+
 	const [addMemberEmail, setAddMemberEmail] = useState("");
+	const [addMemberError, setAddMemberError] = useState(false);
 
 	const handleCloseGroupOptions = (e) => {
 		e.stopPropagation();
 		setIsOpen(false);
 	};
-	const handleLeaveGroup = () => {
+	const handleLeaveGroup = async () => {
+		if (!currentConversation?.id) return;
+		try {
+			const response = await axios.delete(
+				`http://localhost:3000/api/conversations/${currentConversation.id}/users/${auth.userId}`,
+				{
+					headers: {
+						Authorization: `Bearer ${auth.accessToken}`,
+					},
+				}
+			);
+			if (response.status !== 200) return;
+			dispatch(change(null));
+			setRefreshConversations(true);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+	const handleDeleteGroup = async () => {
+		if (!currentConversation?.id) return;
+		try {
+			const response = await axios.delete(
+				`http://localhost:3000/api/conversations/${currentConversation.id}`,
+				{
+					headers: {
+						Authorization: `Bearer ${auth.accessToken}`,
+					},
+				}
+			);
+			if (response.status !== 200) return;
+			dispatch(change(null));
+			setRefreshConversations(true);
+		} catch (error) {
+			console.error(error);
+		}
 		dispatch(change(null));
 	};
-	const handleDeleteGroup = () => {
-		dispatch(change(null));
-	};
-	const handleAddMember = (e) => {
+	const handleAddMember = async (e) => {
 		e.preventDefault();
-		console.log("Adding member");
+		if (!currentConversation?.id) return;
+		if (addMemberEmail === "") {
+			setAddMemberError(true);
+			return;
+		}
+		try {
+			const response = await axios.post(
+				`http://localhost:3000/api/conversations/${currentConversation.id}/users`,
+				{ email: addMemberEmail },
+				{
+					headers: {
+						Authorization: `Bearer ${auth.accessToken}`,
+					},
+				}
+			);
+			if (response.status !== 200) {
+				setAddMemberError(true);
+			} else {
+				dispatch(
+					change({
+						...currentConversation,
+						members: [...currentConversation.members, response.data.user],
+					})
+				);
+				setAddMemberEmail("");
+			}
+		} catch (error) {
+			console.error(error);
+			setAddMemberError(true);
+		}
 	};
-	const handleRemoveMember = (memberId) => {
-		console.log("Removing member with id", memberId);
+	const handleRemoveMember = async (memberId) => {
+		if (!currentConversation?.id) return;
+		try {
+			const response = await axios.delete(
+				`http://localhost:3000/api/conversations/${currentConversation.id}/users/${memberId}`,
+				{
+					headers: {
+						Authorization: `Bearer ${auth.accessToken}`,
+					},
+				}
+			);
+			if (response.status !== 200) return;
+			dispatch(
+				change({
+					...currentConversation,
+					members: currentConversation.members.filter(
+						(member) => member.id !== memberId
+					),
+				})
+			);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	const handleChangeEmail = (e) => {
+		setAddMemberEmail(e.target.value);
+		if (addMemberEmail) setAddMemberError(false);
 	};
 
 	useEffect(() => {
@@ -57,7 +135,7 @@ const GroupOptions = ({ setIsOpen }) => {
 			<div className="group-options" onClick={(e) => e.stopPropagation()}>
 				<h2>{currentConversation?.name}</h2>
 				<ul className="members-list">
-					{members.map((member) => (
+					{currentConversation?.members.map((member) => (
 						<li className="group-member" key={member.id}>
 							<img
 								className="member-profile-picture"
@@ -68,12 +146,14 @@ const GroupOptions = ({ setIsOpen }) => {
 								<p className="member-name">{member.name}</p>
 								<p className="member-email">{member.email}</p>
 							</div>
-							<button
-								className="remove-member-button"
-								onClick={() => handleRemoveMember(member.id)}
-							>
-								<FontAwesomeIcon icon={faTimes} />
-							</button>
+							{member.id !== auth.userId && (
+								<button
+									className="remove-member-button"
+									onClick={() => handleRemoveMember(member.id)}
+								>
+									<FontAwesomeIcon icon={faTimes} />
+								</button>
+							)}
 						</li>
 					))}
 				</ul>
@@ -81,8 +161,9 @@ const GroupOptions = ({ setIsOpen }) => {
 					<input
 						type="text"
 						value={addMemberEmail}
-						onChange={(e) => setAddMemberEmail(e.target.value)}
+						onChange={handleChangeEmail}
 						placeholder="Add member by email"
+						className={addMemberError ? "add-member-error" : ""}
 					/>
 					<button type="submit">
 						<FontAwesomeIcon icon={faPlus} />

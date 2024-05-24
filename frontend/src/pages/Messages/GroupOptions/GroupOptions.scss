@@ -82,6 +82,10 @@
 			background: none;
 			border-bottom: 1px solid white;
 		}
+		input.add-member-error {
+			border-bottom: 1px solid red;
+			color: red;
+		}
 		button {
 			border: none;
 			background: none;

@@ -82,6 +82,10 @@
   background: none;
   border-bottom: 1px solid white;
 }
+.group-options-overlay .add-member-form input.add-member-error {
+  border-bottom: 1px solid red;
+  color: red;
+}
 .group-options-overlay .add-member-form button {
   border: none;
   background: none;

@@ -76,7 +76,12 @@ const Messages = () => {
 					<FontAwesomeIcon icon={faUsers} />
 				</button>
 			)}
-			{isGroupOptionsOpen && <GroupOptions setIsOpen={setIsGroupOptionsOpen} />}
+			{isGroupOptionsOpen && (
+				<GroupOptions
+					setIsOpen={setIsGroupOptionsOpen}
+					setRefreshConversations={setRefreshConversations}
+				/>
+			)}
 		</div>
 	);
 };
