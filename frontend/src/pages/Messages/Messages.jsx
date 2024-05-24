@@ -1,14 +1,17 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import ChatSection from "./ChatSection/ChatSection.jsx";
 import ContactSection from "./ContactSection/ContactSection.jsx";
 import SearchSection from "./SearchSection/SearchSection.jsx";
 import ConversationCard from "./ConversationCard/ConversationCard.jsx";
+import GroupOptions from "./GroupOptions/GroupOptions.jsx";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
 	faUser,
 	faMagnifyingGlass,
 	faXmark,
+	faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import "./Messages.css";
 
@@ -17,6 +20,11 @@ const Messages = () => {
 	const [isSearchSectionOpen, setIsSearchSectionOpen] = useState(false);
 	const [cardIsOpen, setCardIsOpen] = useState(false);
 	const [refreshConversations, setRefreshConversations] = useState(false);
+	const [isGroupOptionsOpen, setIsGroupOptionsOpen] = useState(false);
+
+	const currentConversation = useSelector(
+		(state) => state.currentConversation.value
+	);
 
 	const toggleContactSection = () => {
 		if (cardIsOpen) setCardIsOpen(false);
@@ -60,6 +68,15 @@ const Messages = () => {
 			>
 				<FontAwesomeIcon icon={isSearchSectionOpen ? faXmark : faMagnifyingGlass} />
 			</button>
+			{currentConversation && currentConversation.isGroup && (
+				<button
+					className="group-options-toggle icon-button"
+					onClick={() => setIsGroupOptionsOpen(true)}
+				>
+					<FontAwesomeIcon icon={faUsers} />
+				</button>
+			)}
+			{isGroupOptionsOpen && <GroupOptions setIsOpen={setIsGroupOptionsOpen} />}
 		</div>
 	);
 };

@@ -1,0 +1,92 @@
+.group-options-overlay {
+	position: absolute;
+	width: 100vw;
+	height: 100vh;
+	top: 0;
+	left: 0;
+	background: rgba(0, 0, 0, 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	.group-options {
+		background-color: var(--color-primary-2);
+		border-radius: 10px;
+		width: 500px;
+		height: 400px;
+		padding: 30px;
+		display: flex;
+		flex-direction: column;
+		h2,
+		button {
+			margin: 0;
+			margin-top: 8px;
+		}
+
+		button {
+			border: none;
+			background-color: var(--color-primary);
+		}
+	}
+
+	.members-list {
+		margin: 30px 0;
+		padding: 0;
+		overflow-y: scroll;
+		display: flex;
+		flex-direction: column;
+		align-items: start;
+		gap: 20px;
+		list-style-type: none;
+		li {
+			box-sizing: border-box;
+			padding: 0 20px;
+			display: flex;
+			align-items: center;
+			justify-content: start;
+			position: relative;
+			gap: 20px;
+			width: 100%;
+		}
+		li p {
+			margin: 0;
+			padding: 0;
+		}
+		li .remove-member-button {
+			width: 25px;
+			height: 25px;
+			background: none;
+			border: none;
+			padding: 0;
+			margin: 0;
+			position: absolute;
+			right: 20px;
+		}
+		.member-profile-picture {
+			width: 32px;
+			height: 32px;
+			border-radius: 50%;
+		}
+	}
+	.add-member-form {
+		margin-bottom: 5px;
+		gap: 10px;
+		display: flex;
+		width: 100%;
+		align-items: center;
+		justify-content: space-between;
+		input {
+			box-sizing: border-box;
+			width: 90%;
+			padding-bottom: 5px;
+			border: none;
+			background: none;
+			border-bottom: 1px solid white;
+		}
+		button {
+			border: none;
+			background: none;
+			padding: 0;
+			margin: 0;
+		}
+	}
+}
