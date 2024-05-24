@@ -28,7 +28,7 @@ exports.createConversation = async (req, res) => {
 		return res.status(400).json({ error: err });
 	}
 
-	res.json({ id: conversation.id });
+	res.json({ conversation });
 };
 
 exports.updateConversation = async (req, res) => {

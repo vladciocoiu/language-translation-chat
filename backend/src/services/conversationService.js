@@ -2,6 +2,7 @@ const User = require("../models/user");
 const Conversation = require("../models/conversation");
 
 const UserConversation = require("../models/userConversation");
+const ConversationDTO = require("../dtos/conversationDTO");
 
 async function createConversation(conversationData, userId) {
 	try {
@@ -9,7 +10,11 @@ async function createConversation(conversationData, userId) {
 
 		await conversation.addUser(userId);
 
-		return conversation;
+		const dbConversation = await Conversation.findByPk(conversation.id, {
+			include: User,
+		});
+
+		return new ConversationDTO(dbConversation.dataValues);
 	} catch (error) {
 		throw new Error("Error creating conversation");
 	}
