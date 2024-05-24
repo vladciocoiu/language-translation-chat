@@ -3,7 +3,8 @@ const {
 	createConversation,
 	updateConversation,
 	deleteConversation,
-	addUserToConversation,
+	addUserToConversationById,
+	addUserToConversationByEmail,
 	removeUserFromConversation,
 } = require("../services/conversationService");
 
@@ -28,7 +29,7 @@ exports.createConversation = async (req, res) => {
 		return res.status(400).json({ error: err });
 	}
 
-	res.json({ id: conversation.id });
+	res.json({ conversation });
 };
 
 exports.updateConversation = async (req, res) => {
@@ -74,19 +75,20 @@ exports.addUserToConversation = async (req, res) => {
 	const { conversationId } = req.params;
 
 	// get info from req body
-	const { userId } = req.validatedPayload;
+	const { userId, email } = req.validatedPayload;
 
 	// add user to conversation
-	let success;
+	let user = false;
 	try {
-		success = await addUserToConversation(userId, conversationId);
+		if (userId) user = await addUserToConversationById(userId, conversationId);
+		if (email) user = await addUserToConversationByEmail(email, conversationId);
 	} catch (err) {
 		return res.status(500).json({ error: err });
 	}
 
-	if (!success) return res.status(400).json({ success: false });
+	if (!user) return res.status(400).json({ success: false });
 
-	res.json({ success: true });
+	res.json({ user });
 };
 
 exports.removeUserFromConversation = async (req, res) => {

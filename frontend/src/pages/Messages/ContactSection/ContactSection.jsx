@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import "./ContactSection.css";
 import { change } from "../../../components/CurrentConversation";
+import CreateGroupForm from "./CreateGroupForm";
 import ImageComponent from "./ImageComponent";
 
 const ContactSection = ({
@@ -18,6 +19,7 @@ const ContactSection = ({
 	const auth = useSelector((state) => state.auth.value);
 
 	const [conversations, setConversations] = useState([]);
+	const [isCreatingGroup, setIsCreatingGroup] = useState(false);
 
 	async function getConversations() {
 		try {
@@ -41,7 +43,7 @@ const ContactSection = ({
 						recipient: conversation.members.find((user) => user.id !== auth.userId),
 					};
 				});
-				setConversations(convs);
+				setConversations(convs.reverse());
 			}
 		} catch (error) {
 			console.error(error);
@@ -60,6 +62,12 @@ const ContactSection = ({
 
 	return (
 		<div className={"contact-section " + (isOpen ? "open" : "closed")}>
+			{isCreatingGroup && (
+				<CreateGroupForm
+					setIsCreatingGroup={setIsCreatingGroup}
+					setRefreshConversations={setRefreshConversations}
+				/>
+			)}
 			<div className="contacts-heading-div">
 				<h1>Conversations</h1>
 			</div>
@@ -87,6 +95,14 @@ const ContactSection = ({
 					</li>
 				))}
 			</ul>
+			<div className="group-button-div">
+				<button
+					className="create-group-button"
+					onClick={() => setIsCreatingGroup(true)}
+				>
+					Create Group
+				</button>
+			</div>
 		</div>
 	);
 };

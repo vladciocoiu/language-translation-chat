@@ -6,10 +6,15 @@
 }
 
 .contact-section-toggle,
-.search-section-toggle {
+.search-section-toggle,
+.group-options-toggle {
 	margin: 20px;
 	position: absolute;
 	top: 0;
+}
+
+.group-options-toggle {
+	right: 0;
 }
 
 .search-section-toggle {

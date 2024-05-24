@@ -9,7 +9,16 @@ const updateConversationSchema = Joi.object({
 });
 
 const addUserToConversationSchema = Joi.object({
-	userId: Joi.number().integer().positive().required(),
+	email: Joi.alternatives().conditional("userId", {
+		is: Joi.exist(),
+		then: Joi.forbidden(),
+		otherwise: Joi.string().email().required(),
+	}),
+	userId: Joi.alternatives().conditional("email", {
+		is: Joi.exist(),
+		then: Joi.forbidden(),
+		otherwise: Joi.number().integer().positive().required(),
+	}),
 });
 
 const createMessageSchema = Joi.object({

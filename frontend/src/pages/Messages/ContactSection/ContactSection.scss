@@ -6,22 +6,33 @@
 	align-items: center;
 	justify-content: flex-start;
 	height: 100vh;
-	overflow-y: scroll;
-	overflow-x: visible;
 	position: relative;
 	transition: 0.07s ease-in-out;
 	background-color: var(--color-primary);
 	.contacts-heading-div {
+		flex: 1;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		width: 100%;
-		background-color: black;
-		position: sticky;
 		top: 0;
 		h1 {
 			font-size: 24px;
 		}
+	}
+	.create-group-button {
+		border: none;
+		margin: 20px 0;
+		background-color: var(--color-secondary-2);
+		padding: 20px 30px;
+	}
+	.group-button-div {
+		flex: 1;
+	}
+
+	.create-group-button:hover {
+		background-color: var(--color-secondary-3);
+		color: white;
 	}
 }
 
@@ -31,13 +42,20 @@
 
 .contact-section.closed {
 	width: 0;
+	.create-group-button,
+	.contacts-heading-div {
+		display: none;
+	}
 }
 
 .contact-list {
+	flex: 8;
 	display: flex;
 	flex-direction: column;
 	align-items: start;
-	justify-content: center;
+	overflow-y: scroll;
+	overflow-x: visible;
+	justify-content: flex-start;
 	list-style-type: none;
 	padding: 0;
 	width: 100%;
@@ -64,6 +82,9 @@
 		border-radius: 50%;
 	}
 }
+.contact:nth-child(1) {
+	border-top: none;
+}
 
 .contact:hover {
 	background-color: var(--color-secondary-2);
@@ -73,6 +94,42 @@
 .contact.active {
 	background-color: var(--color-secondary);
 	color: var(--color-primary);
+}
+
+.create-group-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: rgba(0, 0, 0, 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 20;
+}
+
+.create-group-form {
+	form {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+	}
+	input {
+		padding: 20px 10px;
+		padding-bottom: 5px;
+		border: none;
+		border-bottom: 1px solid var(--color-primary-2);
+		background: none;
+	}
+	button {
+		padding: 10px 20px;
+		border: none;
+		background-color: var(--color-secondary-2);
+	}
+	background-color: var(--color-primary);
+	padding: 20px;
+	border-radius: 10px;
 }
 
 @media screen and (max-width: 1024px) {
