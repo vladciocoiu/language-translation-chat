@@ -1,0 +1,54 @@
+.profile-page {
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	.profile-picture {
+		width: 128px;
+		height: 128px;
+		border-radius: 50%;
+	}
+	h2,
+	.name-input {
+		font-size: 25px;
+		width: 200px;
+		background: none;
+		border: none;
+		padding: 0;
+		margin: 0;
+		margin-top: 20px;
+		height: 35px;
+		text-align: center;
+	}
+	.file-input {
+		width: 200px;
+	}
+	p {
+		margin: 0;
+		margin-bottom: 20px;
+	}
+	h2 {
+		cursor: pointer;
+	}
+	.name-input {
+		border-bottom: 1px solid white;
+	}
+	.save-button {
+		border: none;
+		margin-top: 50px;
+		background-color: var(--color-secondary-2);
+	}
+
+	.save-button:hover {
+		background-color: var(--color-secondary-3);
+		color: white;
+	}
+	.language-div {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 10px;
+	}
+}

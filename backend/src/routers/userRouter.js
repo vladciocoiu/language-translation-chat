@@ -23,6 +23,8 @@ router.get(
 	userController.getConversationsByUserId
 );
 
+router.get("/me", userController.getMe);
+
 router.get(
 	"/:receiverId/messages",
 	conversationController.getMessagesByReceiverId

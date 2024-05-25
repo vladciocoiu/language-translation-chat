@@ -146,6 +146,15 @@ async function doesUserExist(userId) {
 	}
 }
 
+async function getUserById(userId) {
+	try {
+		const user = await User.findByPk(userId);
+		return new UserDTO(user.dataValues);
+	} catch (error) {
+		throw new Error("Error fetching user by id");
+	}
+}
+
 module.exports = {
 	createUser,
 	getUserByEmail,
@@ -153,6 +162,7 @@ module.exports = {
 	getUsersByNameOrEmail,
 	getConversationsByUserId,
 	updateUser,
+	getUserById,
 	doesUserExist,
 	sendVerificationEmail,
 	hashPassword,
