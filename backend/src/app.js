@@ -3,6 +3,8 @@ const logger = require("morgan");
 const compression = require("compression");
 const helmet = require("helmet");
 const cors = require("cors");
+const http = require("http");
+const { initWebSocketServer } = require("./websockets/websocketServer");
 
 // load .env file
 require("dotenv").config();
@@ -31,5 +33,7 @@ app.use(helmet());
 // import and use routers
 const apiRouter = require("./routers/index");
 app.use("/api", apiRouter);
+
+initWebSocketServer();
 
 module.exports = app;

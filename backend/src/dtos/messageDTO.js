@@ -6,5 +6,6 @@ module.exports = class MessageDTO {
 		this.text = message.text;
 		this.createdAt = message.createdAt;
 		this.sender = new UserDTO(message.User);
+		this.conversationId = message.conversationId;
 	}
 };
