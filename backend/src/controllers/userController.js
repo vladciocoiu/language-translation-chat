@@ -48,19 +48,20 @@ exports.updateUser = async (req, res) => {
 	const { userId } = req.params;
 
 	// get info from req body (only name for now)
-	const { name } = req.validatedPayload;
+	const { name, language } = req.validatedPayload;
+	const profilePicture = req.file?.path;
 
 	// update user
-	let success;
+	let updatedUser;
 	try {
-		success = await updateUser(userId, { name });
+		updatedUser = await updateUser(userId, { name, language, profilePicture });
 	} catch (err) {
 		return res.status(500).json({ error: err });
 	}
 
-	if (!success) return res.status(400).json({ error: "User not found." });
+	if (!updatedUser) return res.status(400).json({ error: "Bad Request" });
 
-	res.json({ success: true });
+	res.json({ user: updatedUser });
 };
 
 exports.sendDirectMessage = async (req, res) => {

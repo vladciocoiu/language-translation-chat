@@ -117,20 +117,27 @@ async function hashPassword(password) {
 }
 
 async function updateUser(userId, userData) {
-	const fieldsToUpdate = ["name", "language"];
+	const fieldsToUpdate = ["name", "language", "profilePicture"];
 	const filteredUserData = Object.fromEntries(
-		Object.entries(userData).filter(([key]) => fieldsToUpdate.includes(key))
+		Object.entries(userData).filter(
+			([key, value]) => fieldsToUpdate.includes(key) && value != null
+		)
 	);
 	if (userData.password) {
 		filteredUserData.password = await hashPassword(userData.password);
 	}
 
 	try {
-		const user = await User.findByPk(userId);
-		if (!user || !user.isVerified) return false;
+		const [numberOfAffectedRows] = await User.update(filteredUserData, {
+			where: {
+				id: userId,
+				isVerified: true,
+			},
+		});
+		if (numberOfAffectedRows === 0) return false;
 
-		await user.update(filteredUserData);
-		return true;
+		const newUser = await User.findByPk(userId);
+		return new UserDTO(newUser.dataValues);
 	} catch (error) {
 		throw new Error("Error updating user");
 	}

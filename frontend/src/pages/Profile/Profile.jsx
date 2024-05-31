@@ -14,6 +14,7 @@ const Profile = () => {
 	const [currentProfilePicture, setCurrentProfilePicture] = useState(
 		user.profilePicture
 	);
+	const [displayImage, setDisplayImage] = useState(null);
 	const [currentEmail, setCurrentEmail] = useState(user.email);
 	const [isEditingName, setIsEditingName] = useState(false);
 
@@ -31,15 +32,55 @@ const Profile = () => {
 		}
 	};
 
+	const editUser = async () => {
+		if (!user?.id) return false;
+
+		const formData = new FormData();
+		if (currentProfilePicture)
+			formData.append("profilePicture", currentProfilePicture);
+		const json = {};
+		if (currentLanguage && currentLanguage !== user.language)
+			json.language = currentLanguage;
+		if (currentName && currentName !== user.name) json.name = currentName;
+		formData.append("json", JSON.stringify(json));
+
+		if (!json.language && !json.name && !currentProfilePicture) return true;
+
+		try {
+			const response = await axios.put(
+				`http://localhost:3000/api/users/${user.id}`,
+				formData,
+				{
+					headers: {
+						"Content-Type": "multipart/form-data",
+						Authorization: `Bearer ${auth.accessToken}`,
+					},
+				}
+			);
+			if (response.status !== 200) return false;
+			setUser(response.data.user);
+		} catch (error) {
+			console.error(error);
+			return false;
+		}
+		return true;
+	};
+
 	useEffect(() => {
 		fetchUser();
 	}, []);
 
 	useEffect(() => {
+		if (!currentProfilePicture) return;
+		setDisplayImage(URL.createObjectURL(currentProfilePicture));
+	}, [currentProfilePicture]);
+
+	useEffect(() => {
 		setCurrentLanguage(user.language);
 		setCurrentName(user.name);
-		setCurrentProfilePicture(user.profilePicture);
 		setCurrentEmail(user.email);
+		setDisplayImage(`http://localhost:3000/${user.profilePicture}`);
+		console.log("display image ", displayImage);
 	}, [user]);
 
 	const handleChangeLanguage = (e) => {
@@ -53,17 +94,18 @@ const Profile = () => {
 	};
 	const handleUploadProfilePicture = async (e) => {
 		const file = e.target.files[0];
-		setCurrentProfilePicture(URL.createObjectURL(file));
+		setCurrentProfilePicture(file);
 	};
 	const handleSave = async () => {
-		navigate("/messages");
+		const success = await editUser();
+		if (success) navigate("/messages");
 	};
 
 	return (
 		<div className="profile-page">
 			<img
 				className="profile-picture"
-				src={currentProfilePicture || "/images/default-profile-picture.jpg"}
+				src={displayImage || "/images/default-profile-picture.jpg"}
 				alt="profile picture"
 			/>
 			<input

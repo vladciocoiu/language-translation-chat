@@ -57,7 +57,11 @@ const SearchSection = ({ isOpen }) => {
 					<li className="search-user" key={result.id}>
 						<img
 							className="user-profile-picture"
-							src={result.profilePicture || "/images/default-profile-picture.jpg"}
+							src={
+								result.profilePicture
+									? `http://localhost:3000/${result.profilePicture}`
+									: "/images/default-profile-picture.jpg"
+							}
 							alt="profile picture"
 						/>
 						<p className="user-name">{result.name}</p>

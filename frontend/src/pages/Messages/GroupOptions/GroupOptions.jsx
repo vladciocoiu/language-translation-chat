@@ -139,7 +139,11 @@ const GroupOptions = ({ setIsOpen, setRefreshConversations }) => {
 						<li className="group-member" key={member.id}>
 							<img
 								className="member-profile-picture"
-								src={member.profilePicture || "/images/default-profile-picture.jpg"}
+								src={
+									member.profilePicture
+										? `http://localhost:3000/${member.profilePicture}`
+										: "/images/default-profile-picture.jpg"
+								}
 								alt="profile picture"
 							/>
 							<div className="member-info">
