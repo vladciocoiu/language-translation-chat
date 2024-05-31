@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
+import useWebSocket from "react-use-websocket";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
@@ -15,6 +16,34 @@ const ChatSection = ({ setRefreshConversations }) => {
 	const [messages, setMessages] = useState([]);
 	const [messageText, setMessageText] = useState("");
 	const scrollableRef = useRef();
+
+	const { sendMessage, lastMessage, readyState } = useWebSocket(
+		"ws://localhost:5001",
+		{
+			onOpen: () => console.log("Connected"),
+			onClose: () => console.log("Disconnected"),
+			onError: (error) => console.log("WebSocket Error:", error),
+			protocols: auth.accessToken,
+			shouldReconnect: () => true,
+		}
+	);
+
+	const parseLastMessage = () => {
+		const serializedData = JSON.parse(lastMessage.data);
+		const buffer = new Uint8Array(serializedData.data);
+		const jsonString = new TextDecoder().decode(buffer);
+
+		const jsonData = JSON.parse(jsonString);
+		return jsonData;
+	};
+
+	useEffect(() => {
+		if (lastMessage !== null) {
+			const parsedMessage = parseLastMessage();
+			if (parsedMessage.conversationId !== currentConversation.id) return;
+			setMessages((prevMessages) => [...prevMessages, parsedMessage]);
+		}
+	}, [lastMessage]);
 
 	async function getMessages() {
 		const url = currentConversation.id
@@ -85,6 +114,8 @@ const ChatSection = ({ setRefreshConversations }) => {
 			if (response.status !== 200) return;
 
 			const responseMessage = response.data.message;
+			sendMessage(JSON.stringify(responseMessage));
+
 			setMessages([...messages, responseMessage]);
 		} catch (error) {
 			console.error(error);

@@ -125,6 +125,22 @@ async function isUserInConversation(userId, conversationId) {
 	}
 }
 
+async function getConversationUsers(conversationId) {
+	try {
+		const conversation = await Conversation.findByPk(conversationId, {
+			include: User,
+		});
+		if (!conversation) return [];
+
+		return conversation.dataValues.Users.map(
+			(user) => new UserDTO(user.dataValues)
+		);
+	} catch (error) {
+		console.log(error);
+		throw new Error("Error fetching conversation users");
+	}
+}
+
 module.exports = {
 	createConversation,
 	updateConversation,
@@ -133,4 +149,5 @@ module.exports = {
 	addUserToConversationByEmail,
 	removeUserFromConversation,
 	isUserInConversation,
+	getConversationUsers,
 };
