@@ -8,12 +8,14 @@ const {
 	validateSendDM,
 } = require("../middleware/validateUserReq");
 const { verifyUserId } = require("../middleware/verifyUser");
+const { uploadProfilePicture } = require("../config/fileStorage");
 
 router.get("/", userController.getUsersByNameOrEmail);
 router.put(
 	"/:userId",
-	validateUpdateUser,
 	verifyUserId,
+	uploadProfilePicture.single("profilePicture"),
+	validateUpdateUser,
 	userController.updateUser
 );
 
@@ -22,6 +24,8 @@ router.get(
 	verifyUserId,
 	userController.getConversationsByUserId
 );
+
+router.get("/me", userController.getMe);
 
 router.get(
 	"/:receiverId/messages",

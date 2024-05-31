@@ -2,6 +2,7 @@ const {
 	getConversationsByUserId,
 	getUsersByNameOrEmail,
 	updateUser,
+	getUserById,
 } = require("../services/userService");
 
 const { sendDirectMessage } = require("../services/messageService");
@@ -47,19 +48,20 @@ exports.updateUser = async (req, res) => {
 	const { userId } = req.params;
 
 	// get info from req body (only name for now)
-	const { name } = req.validatedPayload;
+	const { name, language } = req.validatedPayload;
+	const profilePicture = req.file?.path;
 
 	// update user
-	let success;
+	let updatedUser;
 	try {
-		success = await updateUser(userId, { name });
+		updatedUser = await updateUser(userId, { name, language, profilePicture });
 	} catch (err) {
 		return res.status(500).json({ error: err });
 	}
 
-	if (!success) return res.status(400).json({ error: "User not found." });
+	if (!updatedUser) return res.status(400).json({ error: "Bad Request" });
 
-	res.json({ success: true });
+	res.json({ user: updatedUser });
 };
 
 exports.sendDirectMessage = async (req, res) => {
@@ -80,4 +82,21 @@ exports.sendDirectMessage = async (req, res) => {
 		return res.status(400).json({ error: "Error sending direct message." });
 
 	res.json({ message });
+};
+
+exports.getMe = async (req, res) => {
+	const userId = req.user.userId;
+
+	if (!userId) return res.status(403).json({ error: "Forbidden" });
+
+	let user;
+	try {
+		user = await getUserById(userId);
+	} catch (err) {
+		return res.status(500).json({ error: err });
+	}
+
+	if (!user) return res.status(404).json({ error: "User not found." });
+
+	res.json({ user });
 };

@@ -35,8 +35,11 @@ const ConversationCard = ({ setCardIsOpen }) => {
 			<img
 				className="profile-picture"
 				src={
-					openConversation.Conversation.recipient?.profilePicture ||
-					"/images/default-profile-picture.jpg"
+					openConversation.Conversation.isGroup
+						? "/images/group-picture.jpg"
+						: openConversation.Conversation.recipient?.profilePicture
+						? `http://localhost:3000/${openConversation.Conversation.recipient?.profilePicture}`
+						: "/images/default-profile-picture.jpg"
 				}
 				alt="profile picture"
 			/>

@@ -4,6 +4,7 @@ import Home from "../pages/Home/Home";
 import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
 import Verify from "../pages/Verify/Verify";
+import Profile from "../pages/Profile/Profile";
 import PrivateRoute from "./PrivateRoute";
 
 const publicPagesData = [
@@ -34,6 +35,11 @@ const privatePagesData = [
 		path: "messages",
 		element: <Messages />,
 		title: "Messages",
+	},
+	{
+		path: "profile",
+		element: <Profile />,
+		title: "Profile",
 	},
 ];
 

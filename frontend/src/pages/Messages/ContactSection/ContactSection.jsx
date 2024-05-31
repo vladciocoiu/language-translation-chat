@@ -83,8 +83,11 @@ const ContactSection = ({
 					>
 						<ImageComponent
 							image={
-								conversation.recipient?.profilePicture ||
-								"/images/default-profile-picture.jpg"
+								conversation.isGroup
+									? "/images/group-picture.jpg"
+									: conversation.recipient?.profilePicture
+									? `http://localhost:3000/${conversation.recipient.profilePicture}`
+									: "/images/default-profile-picture.jpg"
 							}
 							conversation={conversation}
 							setCardIsOpen={setCardIsOpen}

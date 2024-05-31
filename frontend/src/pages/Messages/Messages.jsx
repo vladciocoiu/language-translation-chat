@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate, Link } from "react-router-dom";
 import ChatSection from "./ChatSection/ChatSection.jsx";
 import ContactSection from "./ContactSection/ContactSection.jsx";
 import SearchSection from "./SearchSection/SearchSection.jsx";
@@ -11,11 +12,13 @@ import {
 	faUser,
 	faMagnifyingGlass,
 	faXmark,
+	faMessage,
 	faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import "./Messages.css";
 
 const Messages = () => {
+	const navigate = useNavigate();
 	const [isContactSectionOpen, setIsContactSectionOpen] = useState(true);
 	const [isSearchSectionOpen, setIsSearchSectionOpen] = useState(false);
 	const [cardIsOpen, setCardIsOpen] = useState(false);
@@ -57,7 +60,7 @@ const Messages = () => {
 				}
 				onClick={toggleContactSection}
 			>
-				<FontAwesomeIcon icon={isContactSectionOpen ? faXmark : faUser} />
+				<FontAwesomeIcon icon={isContactSectionOpen ? faXmark : faMessage} />
 			</button>
 			<button
 				className={
@@ -76,6 +79,9 @@ const Messages = () => {
 					<FontAwesomeIcon icon={faUsers} />
 				</button>
 			)}
+			<Link to={"/profile"} className="profile-link icon-button">
+				<FontAwesomeIcon icon={faUser} />
+			</Link>
 			{isGroupOptionsOpen && (
 				<GroupOptions
 					setIsOpen={setIsGroupOptionsOpen}
