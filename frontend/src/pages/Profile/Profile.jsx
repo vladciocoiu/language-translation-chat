@@ -79,8 +79,12 @@ const Profile = () => {
 		setCurrentLanguage(user.language);
 		setCurrentName(user.name);
 		setCurrentEmail(user.email);
-		setDisplayImage(`http://localhost:3000/${user.profilePicture}`);
-		console.log("display image ", displayImage);
+
+		setDisplayImage(
+			user?.profilePicture
+				? `http://localhost:3000/${user.profilePicture}`
+				: "/images/default-profile-picture.jpg"
+		);
 	}, [user]);
 
 	const handleChangeLanguage = (e) => {

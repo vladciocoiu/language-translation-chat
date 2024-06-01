@@ -42,15 +42,35 @@
 }
 
 @media screen and (max-width: 1024px) {
-  .contact-section-toggle.open,
-  .search-section-toggle.open {
+  .contact-section-toggle.open {
     left: 50vw;
+  }
+  .search-section-toggle.open {
+    left: calc(50vw + 50px);
+  }
+  .group-options-toggle {
+    right: 50px;
+  }
+  .search-section-toggle.closed {
+    left: 50px;
+  }
+  .contact-section-toggle,
+  .search-section-toggle,
+  .group-options-toggle,
+  .profile-link {
+    margin: 20px 10px;
   }
 }
 @media screen and (max-width: 768px) {
-  .contact-section-toggle.open,
+  .contact-section-toggle.open {
+    left: calc(100vw - 130px);
+  }
   .search-section-toggle.open {
     left: calc(100vw - 80px);
+  }
+  .contact-section-toggle,
+  .search-section-toggle {
+    z-index: 31;
   }
   .contact-section-toggle.icon-button,
   .search-section-toggle.icon-button {
