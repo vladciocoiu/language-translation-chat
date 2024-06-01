@@ -3,11 +3,15 @@ import axios from "axios";
 import getDateStringFromTimestamp from "../../../utils/getDateStringFromTimestamp.js";
 import { useSelector } from "react-redux";
 import "./MessageBubble.css";
+import Linkify from "./Linkify.jsx";
 
 const MessageBubble = ({ message, setMessages }) => {
 	const userId = useSelector((state) => state.auth.value.userId);
 	const userLanguage = useSelector((state) => state.auth.value.language);
 	const accessToken = useSelector((state) => state.auth.value.accessToken);
+	const currentConversation = useSelector(
+		(state) => state.currentConversation.value
+	);
 
 	const [isTranslated, setIsTranslated] = useState(false);
 
@@ -59,12 +63,19 @@ const MessageBubble = ({ message, setMessages }) => {
 			}
 		>
 			{message.sender.id !== userId && (
-				<button className="toggle-translate" onClick={handleTranslate}>
-					{isTranslated ? "Show original" : "Translate"}
-				</button>
+				<div className="message-details">
+					<button className="toggle-translate" onClick={handleTranslate}>
+						{isTranslated ? "Show original" : "Translate"}
+					</button>
+					{currentConversation.isGroup && (
+						<p className="message-sender">{message.sender.name}</p>
+					)}
+				</div>
 			)}
 			<p className="message-text">
-				{isTranslated ? message.translation.translatedText : message.text}
+				<Linkify
+					text={isTranslated ? message.translation.translatedText : message.text}
+				/>
 			</p>
 			<p className="message-timestamp">
 				{getDateStringFromTimestamp(message.createdAt)}
