@@ -5,6 +5,7 @@ import "./ContactSection.css";
 import { change } from "../../../components/CurrentConversation";
 import CreateGroupForm from "./CreateGroupForm";
 import ImageComponent from "./ImageComponent";
+import defaultPicUrls from "../../../utils/defaultPicUrls";
 
 const ContactSection = ({
 	isOpen,
@@ -24,7 +25,7 @@ const ContactSection = ({
 	async function getConversations() {
 		try {
 			const response = await axios.get(
-				`http://localhost:3000/api/users/${auth.userId}/conversations`,
+				`${import.meta.env.VITE_API_URL}/users/${auth.userId}/conversations`,
 				{
 					headers: {
 						Authorization: `Bearer ${auth.accessToken}`,
@@ -84,10 +85,12 @@ const ContactSection = ({
 						<ImageComponent
 							image={
 								conversation.isGroup
-									? "/images/group-picture.jpg"
+									? defaultPicUrls.group
 									: conversation.recipient?.profilePicture
-									? `http://localhost:3000/${conversation.recipient.profilePicture}`
-									: "/images/default-profile-picture.jpg"
+									? `${import.meta.env.VITE_BACKEND_URL}/${
+											conversation.recipient.profilePicture
+									  }`
+									: defaultPicUrls.profile
 							}
 							conversation={conversation}
 							setCardIsOpen={setCardIsOpen}

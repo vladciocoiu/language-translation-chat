@@ -7,7 +7,6 @@
   justify-content: flex-start;
   height: 100vh;
   position: relative;
-  transition: 0.07s ease-in-out;
   background-color: var(--color-primary);
 }
 .contact-section .contacts-heading-div {
@@ -139,6 +138,7 @@
 @media screen and (max-width: 768px) {
   .contact-section {
     position: absolute;
+    z-index: 30;
   }
   .contact-section.open {
     width: 100vw;

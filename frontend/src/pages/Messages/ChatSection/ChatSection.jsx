@@ -4,6 +4,7 @@ import useWebSocket from "react-use-websocket";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { Comment } from "react-loader-spinner";
 import MessageBubble from "../MessageBubble/MessageBubble.jsx";
 import "./ChatSection.css";
 
@@ -15,18 +16,17 @@ const ChatSection = ({ setRefreshConversations }) => {
 
 	const [messages, setMessages] = useState([]);
 	const [messageText, setMessageText] = useState("");
+	const [state, setState] = useState("not_selected");
 	const scrollableRef = useRef();
 
-	const { sendMessage, lastMessage, readyState } = useWebSocket(
-		"ws://localhost:5001",
-		{
-			onOpen: () => console.log("Connected"),
-			onClose: () => console.log("Disconnected"),
-			onError: (error) => console.log("WebSocket Error:", error),
-			protocols: auth.accessToken,
-			shouldReconnect: () => true,
-		}
-	);
+	const webSocketUrl = import.meta.env.VITE_WS_URL;
+	const { sendMessage, lastMessage, readyState } = useWebSocket(webSocketUrl, {
+		onOpen: () => console.log("Connected"),
+		onClose: () => console.log("Disconnected"),
+		onError: (error) => console.log("WebSocket Error:", error),
+		protocols: auth.accessToken,
+		shouldReconnect: () => true,
+	});
 
 	const parseLastMessage = () => {
 		const serializedData = JSON.parse(lastMessage.data);
@@ -46,9 +46,11 @@ const ChatSection = ({ setRefreshConversations }) => {
 	}, [lastMessage]);
 
 	async function getMessages() {
-		const url = currentConversation.id
-			? `http://localhost:3000/api/conversations/${currentConversation.id}/messages?offset=0&limit=1000`
-			: `http://localhost:3000/api/users/${currentConversation.recipient.id}/messages?offset=0&limit=1000`;
+		const url =
+			import.meta.env.VITE_API_URL +
+			(currentConversation.id
+				? `/conversations/${currentConversation.id}/messages?offset=0&limit=1000`
+				: `/users/${currentConversation.recipient.id}/messages?offset=0&limit=1000`);
 		try {
 			const response = await axios.get(url, {
 				headers: {
@@ -61,6 +63,7 @@ const ChatSection = ({ setRefreshConversations }) => {
 				return [];
 			} else {
 				setMessages(response.data.messages);
+				setState("ready");
 			}
 			return response.data.messages;
 		} catch (error) {
@@ -73,8 +76,10 @@ const ChatSection = ({ setRefreshConversations }) => {
 		if (
 			currentConversation &&
 			(currentConversation.id || currentConversation.recipient)
-		)
+		) {
+			setState("loading");
 			getMessages();
+		}
 	}, [currentConversation]);
 
 	const scrollToBottom = () => {
@@ -101,7 +106,9 @@ const ChatSection = ({ setRefreshConversations }) => {
 
 		try {
 			const response = await axios.post(
-				`http://localhost:3000/api/conversations/${currentConversation.id}/messages`,
+				`${import.meta.env.VITE_API_URL}/conversations/${
+					currentConversation.id
+				}/messages`,
 				{
 					text: messageText,
 				},
@@ -137,7 +144,9 @@ const ChatSection = ({ setRefreshConversations }) => {
 			return;
 		try {
 			const response = await axios.post(
-				`http://localhost:3000/api/users/${currentConversation.recipient.id}/messages`,
+				`${import.meta.env.VITE_API_URL}/users/${
+					currentConversation.recipient.id
+				}/messages`,
 				{
 					text: messageText,
 				},
@@ -168,9 +177,29 @@ const ChatSection = ({ setRefreshConversations }) => {
 				</p>
 			</div>
 			<div className="message-list" ref={scrollableRef}>
-				{messages.map((message, index) => (
-					<MessageBubble key={index} message={message} setMessages={setMessages} />
-				))}
+				{state === "not_selected" && (
+					<div className="not-selected">
+						<p>Select a conversation to start chatting!</p>
+					</div>
+				)}
+
+				{state === "loading" && (
+					<Comment
+						visible={true}
+						height="80"
+						width="80"
+						ariaLabel="comment-loading"
+						wrapperStyle={{}}
+						wrapperClass="comment-wrapper"
+						color="#fff"
+						backgroundColor="var(--color-primary-3)"
+					/>
+				)}
+
+				{state === "ready" &&
+					messages.map((message, index) => (
+						<MessageBubble key={index} message={message} setMessages={setMessages} />
+					))}
 			</div>
 			<form className="message-input" onSubmit={handleSendMessage}>
 				<input

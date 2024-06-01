@@ -15,7 +15,7 @@ const Verify = () => {
 	const verifyEmail = async () => {
 		try {
 			const response = await axios.get(
-				`http://localhost:3000/api/auth/verify?token=${token}`
+				`${import.meta.env.VITE_API_URL}/auth/verify?token=${token}`
 			);
 			if (response.status !== 200) setStatus("failure");
 			else setStatus("success");

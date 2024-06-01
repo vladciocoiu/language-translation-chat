@@ -2,10 +2,13 @@ import axios from "axios";
 
 export const LoginRequest = async (email, password) => {
 	try {
-		const response = await axios.post("http://localhost:3000/api/auth/login", {
-			email,
-			password,
-		});
+		const response = await axios.post(
+			`${import.meta.env.VITE_API_URL}/auth/login`,
+			{
+				email,
+				password,
+			}
+		);
 
 		if (response.status !== 200) {
 			const message =
@@ -17,6 +20,7 @@ export const LoginRequest = async (email, password) => {
 
 		return response.data;
 	} catch (error) {
+		console.log(error);
 		const message =
 			typeof error.response?.data?.error === "string"
 				? error.response.data.error

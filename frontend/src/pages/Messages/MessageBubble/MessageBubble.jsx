@@ -18,7 +18,7 @@ const MessageBubble = ({ message, setMessages }) => {
 		) {
 			try {
 				const response = await axios.post(
-					`http://localhost:3000/api/messages/${message.id}/translate`,
+					`${import.meta.env.VITE_API_URL}/messages/${message.id}/translate`,
 					{
 						targetLanguage: userLanguage,
 					},

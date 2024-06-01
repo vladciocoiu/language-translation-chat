@@ -25,7 +25,7 @@ async function sendVerificationEmail(user) {
 		from: process.env.EMAIL_USER,
 		to: user.email,
 		subject: "Verify Your Email",
-		text: `Click this link to verify your email: http://localhost:5173/verify?token=${user.verificationToken}`,
+		text: `Click this link to verify your email: ${process.env.FRONTEND_URL}/verify?token=${user.verificationToken}`,
 	};
 
 	try {

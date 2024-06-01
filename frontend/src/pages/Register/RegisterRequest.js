@@ -2,11 +2,14 @@ import axios from "axios";
 
 export const RegisterRequest = async (email, displayName, password) => {
 	try {
-		const response = await axios.post("http://localhost:3000/api/auth/register", {
-			email,
-			name: displayName,
-			password,
-		});
+		const response = await axios.post(
+			`${import.meta.env.VITE_API_URL}/auth/register`,
+			{
+				email,
+				name: displayName,
+				password,
+			}
+		);
 
 		if (response.status !== 200) {
 			const message =

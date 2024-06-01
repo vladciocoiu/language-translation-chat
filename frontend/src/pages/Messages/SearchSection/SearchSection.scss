@@ -9,7 +9,6 @@
 	overflow-y: hidden;
 	overflow-x: hidden;
 	position: relative;
-	transition: 0.07s ease-in-out;
 	background-color: var(--color-primary);
 	z-index: 10;
 
@@ -84,6 +83,12 @@
 			border-radius: 50%;
 		}
 	}
+	.comment-wrapper {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex: 10;
+	}
 }
 
 .search-section.open {
@@ -92,4 +97,20 @@
 
 .search-section.closed {
 	width: 0;
+}
+
+@media screen and (max-width: 1024px) {
+	.search-section.open {
+		width: 50vw;
+	}
+}
+
+@media screen and (max-width: 768px) {
+	.search-section {
+		position: absolute;
+		z-index: 30;
+	}
+	.search-section.open {
+		width: 100vw;
+	}
 }

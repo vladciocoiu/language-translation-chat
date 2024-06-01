@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Profile.css";
+import defaultPicUrls from "../../utils/defaultPicUrls";
 
 const Profile = () => {
 	const navigate = useNavigate();
@@ -20,11 +21,14 @@ const Profile = () => {
 
 	const fetchUser = async () => {
 		try {
-			const response = await axios.get(`http://localhost:3000/api/users/me`, {
-				headers: {
-					Authorization: `Bearer ${auth.accessToken}`,
-				},
-			});
+			const response = await axios.get(
+				`${import.meta.env.VITE_API_URL}/users/me`,
+				{
+					headers: {
+						Authorization: `Bearer ${auth.accessToken}`,
+					},
+				}
+			);
 			if (response.status !== 200) return;
 			setUser(response.data.user);
 		} catch (error) {
@@ -48,7 +52,7 @@ const Profile = () => {
 
 		try {
 			const response = await axios.put(
-				`http://localhost:3000/api/users/${user.id}`,
+				`${import.meta.env.VITE_API_URL}/users/${user.id}`,
 				formData,
 				{
 					headers: {
@@ -79,8 +83,12 @@ const Profile = () => {
 		setCurrentLanguage(user.language);
 		setCurrentName(user.name);
 		setCurrentEmail(user.email);
-		setDisplayImage(`http://localhost:3000/${user.profilePicture}`);
-		console.log("display image ", displayImage);
+
+		setDisplayImage(
+			user?.profilePicture
+				? `${import.meta.env.VITE_BACKEND_URL}/${user.profilePicture}`
+				: defaultPicUrls.profile
+		);
 	}, [user]);
 
 	const handleChangeLanguage = (e) => {
@@ -105,7 +113,7 @@ const Profile = () => {
 		<div className="profile-page">
 			<img
 				className="profile-picture"
-				src={displayImage || "/images/default-profile-picture.jpg"}
+				src={displayImage || defaultPicUrls.profile}
 				alt="profile picture"
 			/>
 			<input
