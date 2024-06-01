@@ -5,9 +5,11 @@ const crypto = require("crypto");
 const {
 	getUserByEmail,
 	getUserByVerificationToken,
+	getUserByResetToken,
 	createUser,
 	sendVerificationEmail,
 	hashPassword,
+	sendResetEmail,
 } = require("../services/userService");
 
 const generateAccessToken = async (userId) =>
@@ -86,6 +88,79 @@ exports.verify = async (req, res) => {
 	let success;
 	try {
 		success = await user.update({ isVerified: true });
+	} catch (err) {
+		return res.status(500).json({ error: err });
+	}
+	if (!success) return res.status(400).json({ error: "User not found." });
+
+	res.json({ success: true });
+};
+
+exports.forgotPassword = async (req, res) => {
+	// get info from req body
+	const { email } = req.validatedPayload;
+
+	// check if user exists in db
+	let user;
+	try {
+		user = await getUserByEmail(email);
+	} catch (err) {
+		return res.status(500).json({ error: err });
+	}
+	if (!user) return res.status(400).json({ error: "Invalid email." });
+
+	// generate reset token
+	const passwordResetToken = crypto.randomBytes(20).toString("hex");
+	const passwordResetTokenExpiry = Date.now() + 3600000; // 1 hour
+
+	// save token to user
+	let success;
+	try {
+		success = await user.update({ passwordResetToken, passwordResetTokenExpiry });
+	} catch (err) {
+		return res.status(500).json({ error: err });
+	}
+	if (!success) return res.status(400).json({ error: "User not found." });
+
+	// send reset email
+	try {
+		const success = await sendResetEmail(user.id);
+		if (!success) return res.status(500).json({ error: "Error sending email." });
+	} catch (err) {
+		return res.status(500).json({ error: err });
+	}
+
+	res.json({ success: true });
+};
+
+exports.resetPassword = async (req, res) => {
+	// get info from req body
+	const { password, token } = req.validatedPayload;
+
+	// check if token is valid
+	let user;
+	try {
+		user = await getUserByResetToken(token);
+	} catch (err) {
+		return res.status(500).json({ error: err });
+	}
+	if (!user) return res.status(400).json({ error: "Invalid token." });
+
+	// check if token is expired
+	if (user.passwordResetTokenExpiry < Date.now())
+		return res.status(400).json({ error: "Token expired." });
+
+	// hash password
+	const hash = await hashPassword(password);
+
+	// save new password
+	let success;
+	try {
+		success = await user.update({
+			password: hash,
+			passwordResetToken: null,
+			passwordResetTokenExpiry: null,
+		});
 	} catch (err) {
 		return res.status(500).json({ error: err });
 	}
