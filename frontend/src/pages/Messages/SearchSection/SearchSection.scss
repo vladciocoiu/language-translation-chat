@@ -84,6 +84,12 @@
 			border-radius: 50%;
 		}
 	}
+	.comment-wrapper {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex: 10;
+	}
 }
 
 .search-section.open {

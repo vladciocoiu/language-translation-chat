@@ -80,6 +80,12 @@
   height: 32px;
   border-radius: 50%;
 }
+.search-section .comment-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 10;
+}
 
 .search-section.open {
   width: 360px;
