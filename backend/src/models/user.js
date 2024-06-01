@@ -24,6 +24,14 @@ const User = sequelize.define("User", {
 		type: DataTypes.STRING,
 		allowNull: false,
 	},
+	passwordResetToken: {
+		type: DataTypes.STRING,
+		allowNull: true,
+	},
+	passwordResetTokenExpiry: {
+		type: DataTypes.DATE,
+		allowNull: true,
+	},
 	language: {
 		type: DataTypes.ENUM,
 		values: ["en", "fr", "it", "ro"],

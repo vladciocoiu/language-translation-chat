@@ -5,6 +5,8 @@ import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
 import Verify from "../pages/Verify/Verify";
 import Profile from "../pages/Profile/Profile";
+import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
+import ResetPassword from "../pages/ResetPassword/ResetPassword";
 import PrivateRoute from "./PrivateRoute";
 
 const publicPagesData = [
@@ -27,6 +29,16 @@ const publicPagesData = [
 		path: "verify",
 		element: <Verify />,
 		title: "Verify",
+	},
+	{
+		path: "forgot-password",
+		element: <ForgotPassword />,
+		title: "Forgot Password",
+	},
+	{
+		path: "reset",
+		element: <ResetPassword />,
+		title: "Reset Password",
 	},
 ];
 

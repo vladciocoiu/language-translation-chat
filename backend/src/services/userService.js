@@ -32,10 +32,37 @@ async function sendVerificationEmail(user) {
 		await transporter.sendMail(mailOptions);
 		return true;
 	} catch (error) {
-		console.log(error);
 		return false;
 	}
 }
+
+const sendResetEmail = async (userId) => {
+	const user = await User.findByPk(userId);
+	if (!user) return false;
+
+	const transporter = nodemailer.createTransport({
+		service: "gmail",
+		auth: {
+			user: process.env.EMAIL_USER,
+			pass: process.env.EMAIL_PASS,
+		},
+	});
+
+	const mailOptions = {
+		from: process.env.EMAIL_USER,
+		to: user.email,
+		subject: "Reset Your Password",
+		text: `Click this link to reset your password: ${process.env.FRONTEND_URL}/reset?token=${user.passwordResetToken}`,
+	};
+
+	try {
+		await transporter.sendMail(mailOptions);
+		return true;
+	} catch (error) {
+		console.log(error);
+		return false;
+	}
+};
 
 function generateVerificationToken() {
 	const uniqueID = uuidv4();
@@ -57,6 +84,7 @@ async function getUserByEmail(email) {
 	try {
 		return await User.findOne({ where: { email } });
 	} catch (error) {
+		console.log(error);
 		throw new Error("Error fetching user by email");
 	}
 }
@@ -66,6 +94,14 @@ async function getUserByVerificationToken(token) {
 		return await User.findOne({ where: { verificationToken: token } });
 	} catch (error) {
 		throw new Error("Error fetching user by verification token");
+	}
+}
+
+async function getUserByResetToken(token) {
+	try {
+		return await User.findOne({ where: { passwordResetToken: token } });
+	} catch (error) {
+		throw new Error("Error fetching user by reset token");
 	}
 }
 
@@ -166,6 +202,7 @@ module.exports = {
 	createUser,
 	getUserByEmail,
 	getUserByVerificationToken,
+	getUserByResetToken,
 	getUsersByNameOrEmail,
 	getConversationsByUserId,
 	updateUser,
@@ -173,4 +210,5 @@ module.exports = {
 	doesUserExist,
 	sendVerificationEmail,
 	hashPassword,
+	sendResetEmail,
 };
