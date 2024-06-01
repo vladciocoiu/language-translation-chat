@@ -5,6 +5,7 @@ import { change } from "../../../components/CurrentConversation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 import "./GroupOptions.css";
+import defaultPicUrls from "../../../utils/defaultPicUrls";
 
 const GroupOptions = ({ setIsOpen, setRefreshConversations }) => {
 	const currentConversation = useSelector(
@@ -24,7 +25,9 @@ const GroupOptions = ({ setIsOpen, setRefreshConversations }) => {
 		if (!currentConversation?.id) return;
 		try {
 			const response = await axios.delete(
-				`http://localhost:3000/api/conversations/${currentConversation.id}/users/${auth.userId}`,
+				`${import.meta.env.VITE_API_URL}/conversations/${
+					currentConversation.id
+				}/users/${auth.userId}`,
 				{
 					headers: {
 						Authorization: `Bearer ${auth.accessToken}`,
@@ -42,7 +45,7 @@ const GroupOptions = ({ setIsOpen, setRefreshConversations }) => {
 		if (!currentConversation?.id) return;
 		try {
 			const response = await axios.delete(
-				`http://localhost:3000/api/conversations/${currentConversation.id}`,
+				`${import.meta.env.VITE_API_URL}/conversations/${currentConversation.id}`,
 				{
 					headers: {
 						Authorization: `Bearer ${auth.accessToken}`,
@@ -66,7 +69,9 @@ const GroupOptions = ({ setIsOpen, setRefreshConversations }) => {
 		}
 		try {
 			const response = await axios.post(
-				`http://localhost:3000/api/conversations/${currentConversation.id}/users`,
+				`${import.meta.env.VITE_API_URL}/conversations/${
+					currentConversation.id
+				}/users`,
 				{ email: addMemberEmail },
 				{
 					headers: {
@@ -94,7 +99,9 @@ const GroupOptions = ({ setIsOpen, setRefreshConversations }) => {
 		if (!currentConversation?.id) return;
 		try {
 			const response = await axios.delete(
-				`http://localhost:3000/api/conversations/${currentConversation.id}/users/${memberId}`,
+				`${import.meta.env.VITE_API_URL}/conversations/${
+					currentConversation.id
+				}/users/${memberId}`,
 				{
 					headers: {
 						Authorization: `Bearer ${auth.accessToken}`,
@@ -141,8 +148,8 @@ const GroupOptions = ({ setIsOpen, setRefreshConversations }) => {
 								className="member-profile-picture"
 								src={
 									member.profilePicture
-										? `http://localhost:3000/${member.profilePicture}`
-										: "/images/default-profile-picture.jpg"
+										? `${import.meta.env.VITE_BACKEND_URL}/${member.profilePicture}`
+										: defaultPicUrls.profile
 								}
 								alt="profile picture"
 							/>

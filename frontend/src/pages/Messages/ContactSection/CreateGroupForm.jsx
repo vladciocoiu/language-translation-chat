@@ -16,7 +16,7 @@ const CreateGroupForm = ({ setIsCreatingGroup, setRefreshConversations }) => {
 		if (name === "") return;
 		try {
 			const response = await axios.post(
-				"http://localhost:3000/api/conversations",
+				`${import.meta.env.VITE_API_URL}/conversations`,
 				{ name },
 				{
 					headers: {

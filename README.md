@@ -13,6 +13,19 @@ For translation it makes use of 2 public, free APIs:
 
 #### Frontend
 
+- Create a file called `.env` inside the `frontend/` directory, where you need the following environment variables:
+
+```
+// backend url
+VITE_BACKEND_URL=
+
+// api url (usually backend url + '/api')
+VITE_API_URL=
+
+// websocket url
+VITE_WS_URL=
+```
+
 - Install NPM dependencies:
 
 ```
@@ -57,6 +70,9 @@ EMAIL_PASS=
 
 // API key for DetectLanguage
 DETECTLANGUAGE_API_KEY=
+
+// url of frontend app
+FRONTEND_URL=
 ```
 
 - Install NPM dependencies:

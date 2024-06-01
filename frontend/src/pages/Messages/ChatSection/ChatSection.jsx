@@ -19,16 +19,14 @@ const ChatSection = ({ setRefreshConversations }) => {
 	const [state, setState] = useState("not_selected");
 	const scrollableRef = useRef();
 
-	const { sendMessage, lastMessage, readyState } = useWebSocket(
-		"ws://localhost:5001",
-		{
-			onOpen: () => console.log("Connected"),
-			onClose: () => console.log("Disconnected"),
-			onError: (error) => console.log("WebSocket Error:", error),
-			protocols: auth.accessToken,
-			shouldReconnect: () => true,
-		}
-	);
+	const webSocketUrl = import.meta.env.VITE_WS_URL;
+	const { sendMessage, lastMessage, readyState } = useWebSocket(webSocketUrl, {
+		onOpen: () => console.log("Connected"),
+		onClose: () => console.log("Disconnected"),
+		onError: (error) => console.log("WebSocket Error:", error),
+		protocols: auth.accessToken,
+		shouldReconnect: () => true,
+	});
 
 	const parseLastMessage = () => {
 		const serializedData = JSON.parse(lastMessage.data);
@@ -48,9 +46,11 @@ const ChatSection = ({ setRefreshConversations }) => {
 	}, [lastMessage]);
 
 	async function getMessages() {
-		const url = currentConversation.id
-			? `http://localhost:3000/api/conversations/${currentConversation.id}/messages?offset=0&limit=1000`
-			: `http://localhost:3000/api/users/${currentConversation.recipient.id}/messages?offset=0&limit=1000`;
+		const url =
+			import.meta.env.VITE_API_URL +
+			(currentConversation.id
+				? `/conversations/${currentConversation.id}/messages?offset=0&limit=1000`
+				: `/users/${currentConversation.recipient.id}/messages?offset=0&limit=1000`);
 		try {
 			const response = await axios.get(url, {
 				headers: {
@@ -106,7 +106,9 @@ const ChatSection = ({ setRefreshConversations }) => {
 
 		try {
 			const response = await axios.post(
-				`http://localhost:3000/api/conversations/${currentConversation.id}/messages`,
+				`${import.meta.env.VITE_API_URL}/conversations/${
+					currentConversation.id
+				}/messages`,
 				{
 					text: messageText,
 				},
@@ -142,7 +144,9 @@ const ChatSection = ({ setRefreshConversations }) => {
 			return;
 		try {
 			const response = await axios.post(
-				`http://localhost:3000/api/users/${currentConversation.recipient.id}/messages`,
+				`${import.meta.env.VITE_API_URL}/users/${
+					currentConversation.recipient.id
+				}/messages`,
 				{
 					text: messageText,
 				},

@@ -6,6 +6,7 @@ import { Comment } from "react-loader-spinner";
 import axios from "axios";
 import { change } from "../../../components/CurrentConversation";
 import "./SearchSection.css";
+import defaultPicUrls from "../../../utils/defaultPicUrls";
 
 const SearchSection = ({ isOpen }) => {
 	const [results, setResults] = useState([]);
@@ -27,7 +28,7 @@ const SearchSection = ({ isOpen }) => {
 		setState("loading");
 		try {
 			const response = await axios.get(
-				`http://localhost:3000/api/users?query=${query}`,
+				`${import.meta.env.VITE_API_URL}/users?query=${query}`,
 				{
 					headers: {
 						Authorization: `Bearer ${auth.accessToken}`,
@@ -76,8 +77,8 @@ const SearchSection = ({ isOpen }) => {
 								className="user-profile-picture"
 								src={
 									result.profilePicture
-										? `http://localhost:3000/${result.profilePicture}`
-										: "/images/default-profile-picture.jpg"
+										? `${import.meta.env.VITE_BACKEND_URL}/${result.profilePicture}`
+										: defaultPicUrls.profile
 								}
 								alt="profile picture"
 							/>

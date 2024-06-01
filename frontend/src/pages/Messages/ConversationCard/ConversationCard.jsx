@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes as close } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import "./ConversationCard.css";
+import defaultPicUrls from "../../../utils/defaultPicUrls";
 
 const ConversationCard = ({ setCardIsOpen }) => {
 	const divRef = useRef();
@@ -36,10 +37,12 @@ const ConversationCard = ({ setCardIsOpen }) => {
 				className="profile-picture"
 				src={
 					openConversation.Conversation.isGroup
-						? "/images/group-picture.jpg"
+						? defaultPicUrls.group
 						: openConversation.Conversation.recipient?.profilePicture
-						? `http://localhost:3000/${openConversation.Conversation.recipient?.profilePicture}`
-						: "/images/default-profile-picture.jpg"
+						? `${import.meta.env.VITE_BACKEND_URL}/${
+								openConversation.Conversation.recipient?.profilePicture
+						  }`
+						: defaultPicUrls.profile
 				}
 				alt="profile picture"
 			/>
