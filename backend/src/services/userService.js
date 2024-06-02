@@ -1,8 +1,4 @@
 const { Op } = require("sequelize");
-const { v4: uuidv4 } = require("uuid");
-const crypto = require("crypto");
-const bcrypt = require("bcryptjs");
-const nodemailer = require("nodemailer");
 
 require("dotenv").config();
 
@@ -12,77 +8,12 @@ const Conversation = require("../models/conversation");
 const ConversationDTO = require("../dtos/conversationDTO");
 const UserDTO = require("../dtos/userDTO");
 
-async function sendVerificationEmail(user) {
-	const transporter = nodemailer.createTransport({
-		service: "gmail",
-		auth: {
-			user: process.env.EMAIL_USER,
-			pass: process.env.EMAIL_PASS,
-		},
-	});
-
-	const mailOptions = {
-		from: process.env.EMAIL_USER,
-		to: user.email,
-		subject: "Verify Your Email",
-		text: `Click this link to verify your email: ${process.env.FRONTEND_URL}/verify?token=${user.verificationToken}`,
-	};
-
-	try {
-		await transporter.sendMail(mailOptions);
-		return true;
-	} catch (error) {
-		return false;
-	}
-}
-
-const sendResetEmail = async (userId) => {
-	const user = await User.findByPk(userId);
-	if (!user) return false;
-
-	const transporter = nodemailer.createTransport({
-		service: "gmail",
-		auth: {
-			user: process.env.EMAIL_USER,
-			pass: process.env.EMAIL_PASS,
-		},
-	});
-
-	const mailOptions = {
-		from: process.env.EMAIL_USER,
-		to: user.email,
-		subject: "Reset Your Password",
-		text: `Click this link to reset your password: ${process.env.FRONTEND_URL}/reset?token=${user.passwordResetToken}`,
-	};
-
-	try {
-		await transporter.sendMail(mailOptions);
-		return true;
-	} catch (error) {
-		console.log(error);
-		return false;
-	}
-};
-
-function generateVerificationToken() {
-	const uniqueID = uuidv4();
-	const hash = crypto.createHash("sha256").update(uniqueID).digest("hex");
-	return hash.slice(0, 32);
-}
-
-async function createUser(userData) {
-	const user = { ...userData, verificationToken: generateVerificationToken() };
-	try {
-		return await User.create(user);
-	} catch (error) {
-		console.log(error);
-		throw new Error("Error creating user");
-	}
-}
+const { hashPassword } = require("./authService");
 
 async function getUserByEmail(email) {
 	try {
-		return await User.findOne({ where: { email } });
+		const user = await User.findOne({ where: { email } });
+		return user;
 	} catch (error) {
 		console.log(error);
 		throw new Error("Error fetching user by email");
@@ -148,10 +79,6 @@ async function getUsersByNameOrEmail(query, userId) {
 	}
 }
 
-async function hashPassword(password) {
-	return await bcrypt.hash(password, 10);
-}
-
 async function updateUser(userId, userData) {
 	const fieldsToUpdate = ["name", "language", "profilePicture"];
 	const filteredUserData = Object.fromEntries(
@@ -199,7 +126,6 @@ async function getUserById(userId) {
 }
 
 module.exports = {
-	createUser,
 	getUserByEmail,
 	getUserByVerificationToken,
 	getUserByResetToken,
@@ -208,7 +134,4 @@ module.exports = {
 	updateUser,
 	getUserById,
 	doesUserExist,
-	sendVerificationEmail,
-	hashPassword,
-	sendResetEmail,
 };
