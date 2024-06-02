@@ -7,6 +7,7 @@ import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { Comment } from "react-loader-spinner";
 import MessageBubble from "../MessageBubble/MessageBubble.jsx";
 import "./ChatSection.css";
+import { current } from "@reduxjs/toolkit";
 
 const ChatSection = ({ setRefreshConversations }) => {
 	const currentConversation = useSelector(
@@ -46,6 +47,7 @@ const ChatSection = ({ setRefreshConversations }) => {
 	}, [lastMessage]);
 
 	async function getMessages() {
+		if (!currentConversation?.id && !currentConversation.recipient) return;
 		const url =
 			import.meta.env.VITE_API_URL +
 			(currentConversation.id
@@ -79,6 +81,8 @@ const ChatSection = ({ setRefreshConversations }) => {
 		) {
 			setState("loading");
 			getMessages();
+		} else {
+			setState("not_selected");
 		}
 	}, [currentConversation]);
 

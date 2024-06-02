@@ -1,12 +1,15 @@
 const Message = require("../models/message");
 const User = require("../models/user");
 const Conversation = require("../models/conversation");
+const Translation = require("../models/translation");
 const DetectLanguage = require("detectlanguage");
 const axios = require("axios");
 
 require("dotenv").config();
 
 const MessageDTO = require("../dtos/messageDTO");
+const TranslationDTO = require("../dtos/translationDTO");
+const { where } = require("sequelize");
 
 async function createMessage(messageData) {
 	const { text, senderId, conversationId } = messageData;
@@ -174,10 +177,25 @@ async function getMessagesByReceiverId(senderId, receiverId, offset, limit) {
 	return messages;
 }
 
+async function getMessageLanguage(messageId) {
+	try {
+		const translation = await Translation.findOne({ where: { messageId } });
+		if (!translation) return false;
+		console.log("Found cached language for messageId=", messageId);
+		return translation.originalLanguage;
+	} catch (error) {
+		return false;
+	}
+}
+
 // detect language of message
-// first try to detect language using detectlanguage API
+// firstly try to get the language from the translation table
+// second try to detect language using detectlanguage API
 // if it fails, consider the language of the sender
 async function detectMessageLanguage(messageId) {
+	const language = await getMessageLanguage(messageId);
+	if (language) return language;
+
 	const detectlanguage = new DetectLanguage(process.env.DETECTLANGUAGE_API_KEY);
 
 	const message = await Message.findByPk(messageId);
@@ -200,18 +218,62 @@ async function detectMessageLanguage(messageId) {
 	}
 }
 
-async function translateMessage(messageId, targetLanguage, messageLanguage) {
+async function getTranslatedMessage(
+	messageId,
+	targetLanguage,
+	originalLanguage
+) {
 	const message = await Message.findByPk(messageId);
 	if (!message) return false;
 
 	// if the message is already in the target language, no need to translate
-	if (messageLanguage === targetLanguage) return message.text;
+	if (originalLanguage === targetLanguage)
+		return {
+			translatedText: message.dataValues.text,
+			originalLanguage,
+			targetLanguage,
+		};
 
 	try {
-		const url = `https://api.mymemory.translated.net/get?q=${message.text}&langpair=${messageLanguage}|${targetLanguage}&de=${process.env.EMAIL_USER}`;
+		const translation = await Translation.findOne({
+			where: { messageId, targetLanguage },
+		});
+		if (translation)
+			console.log("Found cached translation for messageId=", messageId);
+		return translation;
+	} catch (error) {
+		throw new Error("Error fetching translation");
+	}
+}
+
+async function translateMessage(messageId, targetLanguage, originalLanguage) {
+	// check if the message is already translated
+	try {
+		const translation = await getTranslatedMessage(
+			messageId,
+			targetLanguage,
+			originalLanguage
+		);
+		if (translation) return new TranslationDTO(translation.dataValues);
+	} catch (error) {
+		console.log("Error fetching translation for messageId=", messageId);
+	}
+
+	const message = await Message.findByPk(messageId);
+	if (!message) return false;
+
+	try {
+		const url = `https://api.mymemory.translated.net/get?q=${message.text}&langpair=${originalLanguage}|${targetLanguage}&de=${process.env.EMAIL_USER}`;
 		const response = await axios.get(url);
 		const translatedText = response.data.responseData.translatedText;
-		return translatedText;
+
+		const translation = await Translation.create({
+			messageId,
+			translatedText,
+			originalLanguage,
+			targetLanguage,
+		});
+		return new TranslationDTO(translation.dataValues);
 	} catch (error) {
 		console.log(error);
 		throw new Error("Error translating message");

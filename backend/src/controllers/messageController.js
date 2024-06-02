@@ -46,9 +46,9 @@ exports.translateMessage = async (req, res) => {
 	const { messageId } = req.params;
 	const { targetLanguage } = req.body;
 
-	let messageLanguage;
+	let originalLanguage;
 	try {
-		messageLanguage = await detectMessageLanguage(messageId);
+		originalLanguage = await detectMessageLanguage(messageId);
 	} catch (err) {
 		return res
 			.status(400)
@@ -56,12 +56,12 @@ exports.translateMessage = async (req, res) => {
 	}
 
 	try {
-		const translatedText = await translateMessage(
+		const translation = await translateMessage(
 			messageId,
 			targetLanguage,
-			messageLanguage
+			originalLanguage
 		);
-		res.json({ messageLanguage, translatedText });
+		res.json(translation);
 	} catch (err) {
 		return res.status(500).json({ error: err });
 	}
