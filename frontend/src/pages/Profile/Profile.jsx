@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { changeUser } from "../../components/Auth";
 import "./Profile.css";
 import defaultPicUrls from "../../utils/defaultPicUrls";
@@ -10,6 +10,7 @@ const Profile = () => {
 	const navigate = useNavigate();
 	const auth = useSelector((state) => state.auth.value);
 	const dispatch = useDispatch();
+	const axiosPrivate = useAxiosPrivate();
 
 	const [user, setUser] = useState({});
 	const [currentLanguage, setCurrentLanguage] = useState(user.language);
@@ -23,13 +24,8 @@ const Profile = () => {
 
 	const fetchUser = async () => {
 		try {
-			const response = await axios.get(
-				`${import.meta.env.VITE_API_URL}/users/me`,
-				{
-					headers: {
-						Authorization: `Bearer ${auth.accessToken}`,
-					},
-				}
+			const response = await axiosPrivate.get(
+				`${import.meta.env.VITE_API_URL}/users/me`
 			);
 			if (response.status !== 200) return;
 			setUser(response.data.user);
@@ -53,13 +49,12 @@ const Profile = () => {
 		if (!json.language && !json.name && !currentProfilePicture) return true;
 
 		try {
-			const response = await axios.put(
+			const response = await axiosPrivate.put(
 				`${import.meta.env.VITE_API_URL}/users/${user.id}`,
 				formData,
 				{
 					headers: {
 						"Content-Type": "multipart/form-data",
-						Authorization: `Bearer ${auth.accessToken}`,
 					},
 				}
 			);

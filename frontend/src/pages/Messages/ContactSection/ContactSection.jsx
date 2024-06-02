@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import axios from "axios";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import "./ContactSection.css";
 import { change } from "../../../components/CurrentConversation";
 import CreateGroupForm from "./CreateGroupForm";
@@ -18,19 +18,16 @@ const ContactSection = ({
 	);
 	const dispatch = useDispatch();
 	const auth = useSelector((state) => state.auth.value);
+	const axiosPrivate = useAxiosPrivate();
 
 	const [conversations, setConversations] = useState([]);
 	const [isCreatingGroup, setIsCreatingGroup] = useState(false);
 
 	async function getConversations() {
+		if (!auth.userId) return;
 		try {
-			const response = await axios.get(
-				`${import.meta.env.VITE_API_URL}/users/${auth.userId}/conversations`,
-				{
-					headers: {
-						Authorization: `Bearer ${auth.accessToken}`,
-					},
-				}
+			const response = await axiosPrivate.get(
+				`${import.meta.env.VITE_API_URL}/users/${auth.userId}/conversations`
 			);
 			if (response.status !== 200) {
 				console.error(new Error("Failed to get conversations"));
@@ -51,6 +48,10 @@ const ContactSection = ({
 			return [];
 		}
 	}
+
+	useEffect(() => {
+		setRefreshConversations(true);
+	}, [auth.userId]);
 
 	useEffect(() => {
 		getConversations();

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import getDateStringFromTimestamp from "../../../utils/getDateStringFromTimestamp.js";
 import { useSelector } from "react-redux";
 import "./MessageBubble.css";
@@ -12,6 +12,7 @@ const MessageBubble = ({ message, setMessages }) => {
 	const currentConversation = useSelector(
 		(state) => state.currentConversation.value
 	);
+	const axiosPrivate = useAxiosPrivate();
 
 	const [isTranslated, setIsTranslated] = useState(false);
 
@@ -21,15 +22,10 @@ const MessageBubble = ({ message, setMessages }) => {
 			(!message.translation || message.translation.targetLanguage !== userLanguage)
 		) {
 			try {
-				const response = await axios.post(
+				const response = await axiosPrivate.post(
 					`${import.meta.env.VITE_API_URL}/messages/${message.id}/translate`,
 					{
 						targetLanguage: userLanguage,
-					},
-					{
-						headers: {
-							Authorization: `Bearer ${accessToken}`,
-						},
 					}
 				);
 

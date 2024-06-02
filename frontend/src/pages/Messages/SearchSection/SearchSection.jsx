@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMessage } from "@fortawesome/free-solid-svg-icons";
 import { Comment } from "react-loader-spinner";
-import axios from "axios";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { change } from "../../../components/CurrentConversation";
 import "./SearchSection.css";
 import defaultPicUrls from "../../../utils/defaultPicUrls";
@@ -14,6 +14,7 @@ const SearchSection = ({ isOpen }) => {
 	const [state, setState] = useState("loaded");
 	const auth = useSelector((state) => state.auth.value);
 	const dispatch = useDispatch();
+	const axiosPrivate = useAxiosPrivate();
 
 	const startConversation = (user) => {
 		const fakeConversation = {
@@ -27,13 +28,8 @@ const SearchSection = ({ isOpen }) => {
 		e.preventDefault();
 		setState("loading");
 		try {
-			const response = await axios.get(
-				`${import.meta.env.VITE_API_URL}/users?query=${query}`,
-				{
-					headers: {
-						Authorization: `Bearer ${auth.accessToken}`,
-					},
-				}
+			const response = await axiosPrivate.get(
+				`${import.meta.env.VITE_API_URL}/users?query=${query}`
 			);
 			if (response.status !== 200) {
 				console.error(new Error("Failed to search users"));
