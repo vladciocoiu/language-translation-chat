@@ -72,7 +72,6 @@ const Profile = () => {
 					language: response.data.user.language,
 				})
 			);
-			console.log("changed language: ", user.language);
 		} catch (error) {
 			console.error(error);
 			return false;

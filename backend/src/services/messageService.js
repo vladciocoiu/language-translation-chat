@@ -227,12 +227,13 @@ async function getTranslatedMessage(
 	if (!message) return false;
 
 	// if the message is already in the target language, no need to translate
-	if (originalLanguage === targetLanguage)
+	if (originalLanguage === targetLanguage) {
 		return {
 			translatedText: message.dataValues.text,
 			originalLanguage,
 			targetLanguage,
 		};
+	}
 
 	try {
 		const translation = await Translation.findOne({
@@ -240,7 +241,7 @@ async function getTranslatedMessage(
 		});
 		if (translation)
 			console.log("Found cached translation for messageId=", messageId);
-		return translation;
+		return translation?.dataValues;
 	} catch (error) {
 		throw new Error("Error fetching translation");
 	}
@@ -254,7 +255,7 @@ async function translateMessage(messageId, targetLanguage, originalLanguage) {
 			targetLanguage,
 			originalLanguage
 		);
-		if (translation) return new TranslationDTO(translation.dataValues);
+		if (translation) return new TranslationDTO(translation);
 	} catch (error) {
 		console.log("Error fetching translation for messageId=", messageId);
 	}

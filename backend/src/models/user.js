@@ -22,7 +22,7 @@ const User = sequelize.define("User", {
 	},
 	verificationToken: {
 		type: DataTypes.STRING,
-		allowNull: false,
+		allowNull: true,
 	},
 	passwordResetToken: {
 		type: DataTypes.STRING,
