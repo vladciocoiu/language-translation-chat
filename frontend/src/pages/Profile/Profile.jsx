@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { changeUser } from "../../components/Auth";
 import "./Profile.css";
 import defaultPicUrls from "../../utils/defaultPicUrls";
 
 const Profile = () => {
 	const navigate = useNavigate();
 	const auth = useSelector((state) => state.auth.value);
+	const dispatch = useDispatch();
 
 	const [user, setUser] = useState({});
 	const [currentLanguage, setCurrentLanguage] = useState(user.language);
@@ -63,6 +65,14 @@ const Profile = () => {
 			);
 			if (response.status !== 200) return false;
 			setUser(response.data.user);
+			dispatch(
+				changeUser({
+					email: response.data.user.email,
+					userId: response.data.user.id,
+					language: response.data.user.language,
+				})
+			);
+			console.log("changed language: ", user.language);
 		} catch (error) {
 			console.error(error);
 			return false;

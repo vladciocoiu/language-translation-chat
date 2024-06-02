@@ -12,23 +12,27 @@ const Message = sequelize.define("Message", {
 	},
 });
 
-User.hasMany(Message, {
-	onDelete: "CASCADE",
-	foreignKey: "senderId",
-});
-Message.belongsTo(User, {
-	onDelete: "CASCADE",
-	foreignKey: "senderId",
-});
+if (User) {
+	User.hasMany(Message, {
+		onDelete: "CASCADE",
+		foreignKey: "senderId",
+	});
+	Message.belongsTo(User, {
+		onDelete: "CASCADE",
+		foreignKey: "senderId",
+	});
+}
 
-Message.belongsTo(Conversation, {
-	onDelete: "CASCADE",
-	foreignKey: "conversationId",
-});
-Conversation.hasMany(Message, {
-	onDelete: "CASCADE",
-	foreignKey: "conversationId",
-});
+if (Conversation) {
+	Message.belongsTo(Conversation, {
+		onDelete: "CASCADE",
+		foreignKey: "conversationId",
+	});
+	Conversation.hasMany(Message, {
+		onDelete: "CASCADE",
+		foreignKey: "conversationId",
+	});
+}
 
 // Sync the model with the database (creates the table if it doesn't exist)
 (async () => {

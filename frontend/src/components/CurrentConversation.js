@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const currentConversationSlice = createSlice({
 	name: "currentConversation",
 	initialState: {
-		value: {},
+		value: null,
 	},
 	reducers: {
 		change: {

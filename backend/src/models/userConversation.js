@@ -8,13 +8,15 @@ const Conversation = require("./conversation");
 
 const UserConversation = sequelize.define("UserConversation", {});
 
-Conversation.belongsToMany(User, {
-	through: UserConversation,
-});
+if (User && Conversation) {
+	Conversation.belongsToMany(User, {
+		through: UserConversation,
+	});
 
-User.belongsToMany(Conversation, {
-	through: UserConversation,
-});
+	User.belongsToMany(Conversation, {
+		through: UserConversation,
+	});
+}
 
 // Sync the model with the database (creates the table if it doesn't exist)
 (async () => {

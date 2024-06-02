@@ -57,10 +57,6 @@ const ContactSection = ({
 		setRefreshConversations(false);
 	}, [refreshConversations]);
 
-	useEffect(() => {
-		dispatch(change(conversations[0]));
-	}, []);
-
 	return (
 		<div className={"contact-section " + (isOpen ? "open" : "closed")}>
 			{isCreatingGroup && (
