@@ -61,8 +61,9 @@ DB_HOST=
 // should have the format mysql://username:password@host:port/db_name
 DB_URL=
 
-// secret for generating the JWTs (a random sequence of 64 bytes in hex)
+// secrets for generating the JWTs (random sequences of 64 bytes in hex)
 JWT_SECRET=
+REFRESH_TOKEN_SECRET=
 
 // email credentials
 EMAIL_USER=
