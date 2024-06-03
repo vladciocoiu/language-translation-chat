@@ -108,6 +108,11 @@ exports.resetPassword = async (req, res) => {
 
 exports.logout = async (req, res) => {
 	const refreshToken = req.cookies["refreshToken"];
+	res.clearCookie("refreshToken", {
+		httpOnly: true,
+		sameSite: "None",
+		secure: true,
+	});
 
 	if (!refreshToken)
 		return res.status(400).json({ error: "No refresh token provided." });
@@ -118,6 +123,7 @@ exports.logout = async (req, res) => {
 	} catch (err) {
 		return res.status(500).json({ error: err });
 	}
+	return res.json({ success: true });
 };
 
 exports.refresh = async (req, res) => {

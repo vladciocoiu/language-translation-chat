@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { changeUser } from "../../components/Auth";
+import { changeUser, setAccessToken, setLoggedIn } from "../../components/Auth";
 import "./Profile.css";
 import defaultPicUrls from "../../utils/defaultPicUrls";
 
@@ -113,6 +113,18 @@ const Profile = () => {
 		if (success) navigate("/messages");
 	};
 
+	const handleLogout = async () => {
+		try {
+			await axiosPrivate.post(`${import.meta.env.VITE_API_URL}/auth/logout`);
+			dispatch(changeUser({}));
+			dispatch(setLoggedIn(false));
+			dispatch(setAccessToken(null));
+			navigate("/");
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
 	return (
 		<div className="profile-page">
 			<img
@@ -154,6 +166,9 @@ const Profile = () => {
 			</div>
 			<button className="save-button" onClick={handleSave}>
 				Save
+			</button>
+			<button className="logout-button" onClick={handleLogout}>
+				Logout
 			</button>
 		</div>
 	);

@@ -41,6 +41,10 @@
   margin-top: 50px;
   background-color: var(--color-secondary-2);
 }
+.profile-page .logout-button {
+  border: none;
+  margin-top: 20px;
+}
 .profile-page .save-button:hover {
   background-color: var(--color-secondary-3);
   color: white;

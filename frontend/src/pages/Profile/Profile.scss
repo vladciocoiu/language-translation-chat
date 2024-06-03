@@ -41,6 +41,11 @@
 		background-color: var(--color-secondary-2);
 	}
 
+	.logout-button {
+		border: none;
+		margin-top: 20px;
+	}
+
 	.save-button:hover {
 		background-color: var(--color-secondary-3);
 		color: white;
