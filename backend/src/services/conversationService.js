@@ -136,7 +136,6 @@ async function getConversationUsers(conversationId) {
 			(user) => new UserDTO(user.dataValues)
 		);
 	} catch (error) {
-		console.log(error);
 		throw new Error("Error fetching conversation users");
 	}
 }
@@ -145,6 +144,7 @@ module.exports = {
 	createConversation,
 	updateConversation,
 	deleteConversation,
+	addUserToConversation,
 	addUserToConversationById,
 	addUserToConversationByEmail,
 	removeUserFromConversation,
