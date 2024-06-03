@@ -4,6 +4,7 @@ const compression = require("compression");
 const helmet = require("helmet");
 const cors = require("cors");
 const http = require("http");
+const cookieParser = require("cookie-parser");
 const { initWebSocketServer } = require("./websockets/websocketServer");
 
 // load .env file
@@ -29,6 +30,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(compression());
 app.use(helmet());
+app.use(cookieParser());
 
 // import and use routers
 const apiRouter = require("./routers/index");

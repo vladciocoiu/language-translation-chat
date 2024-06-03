@@ -1,12 +1,3 @@
-const bcrypt = require("bcryptjs");
-const crypto = require("crypto");
-
-const {
-	getUserByEmail,
-	getUserByVerificationToken,
-	getUserByResetToken,
-} = require("../services/userService");
-
 const authService = require("../services/authService");
 
 exports.register = async (req, res) => {
@@ -51,7 +42,26 @@ exports.login = async (req, res) => {
 	// add token to response header
 	res.header("authentication", "Bearer " + user.accessToken);
 
-	res.json(user);
+	// add refresh token to cookie
+	if (req.cookies["refreshToken"]) {
+		res.clearCookie("refreshToken", {
+			httpOnly: true,
+			sameSite: "None",
+			secure: true,
+		});
+	}
+	res.cookie("refreshToken", user.refreshToken, {
+		httpOnly: true,
+		sameSite: "None",
+		secure: true,
+	});
+
+	res.json({
+		accessToken: user.accessToken,
+		userId: user.userId,
+		email: user.email,
+		language: user.language,
+	});
 };
 
 exports.verify = async (req, res) => {
@@ -94,4 +104,52 @@ exports.resetPassword = async (req, res) => {
 	}
 
 	res.json({ success: true });
+};
+
+exports.logout = async (req, res) => {
+	const refreshToken = req.cookies["refreshToken"];
+	res.clearCookie("refreshToken", {
+		httpOnly: true,
+		sameSite: "None",
+		secure: true,
+	});
+
+	if (!refreshToken)
+		return res.status(400).json({ error: "No refresh token provided." });
+
+	try {
+		const success = await authService.logout(refreshToken);
+		if (!success) return res.status(400).json({ error: "Invalid token." });
+	} catch (err) {
+		return res.status(500).json({ error: err });
+	}
+	return res.json({ success: true });
+};
+
+exports.refresh = async (req, res) => {
+	const refreshToken = req.cookies["refreshToken"];
+	res.clearCookie("refreshToken", {
+		httpOnly: true,
+		sameSite: "None",
+		secure: true,
+	});
+
+	if (!refreshToken)
+		return res.status(400).json({ error: "No refresh token provided." });
+
+	try {
+		const newTokens = await authService.refresh(refreshToken);
+		if (!newTokens) return res.status(400).json({ error: "Invalid token." });
+
+		res.cookie("refreshToken", newTokens.refreshToken, {
+			httpOnly: true,
+			secure: true,
+			sameSite: "None",
+		});
+		res.header("authentication", "Bearer " + newTokens.accessToken);
+
+		res.json({ accessToken: newTokens.accessToken });
+	} catch (err) {
+		return res.status(500).json({ error: err });
+	}
 };

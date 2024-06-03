@@ -7,17 +7,25 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const User = require("../models/user");
+const RefreshToken = require("../models/refreshToken");
+
+async function hash(password) {
+	return await bcrypt.hash(password, 10);
+}
+function hashToken(token) {
+	return crypto.createHash("sha256").update(token).digest("hex");
+}
 
 async function register(name, email, password) {
 	const existingUser = await User.findOne({ where: { email } });
 	if (existingUser) return false;
 
-	const hash = await hashPassword(password);
+	const hashedPassword = await hash(password);
 
 	const user = await User.create({
 		name,
 		email,
-		password: hash,
+		password: hashedPassword,
 		verificationToken: generateVerificationToken(),
 	});
 	return user;
@@ -33,9 +41,14 @@ async function login(email, password) {
 	const validPassword = await bcrypt.compare(password, user.password);
 	if (!validPassword) return false;
 
-	const accessToken = await generateAccessToken(user.id);
+	const accessToken = generateAccessToken(user.id);
+	const refreshToken = generateRefreshToken(user.id);
+	const hashedToken = hashToken(refreshToken);
+	await RefreshToken.create({ hash: hashedToken });
+
 	return {
 		accessToken,
+		refreshToken,
 		userId: user.id,
 		email: user.email,
 		language: user.language,
@@ -43,14 +56,11 @@ async function login(email, password) {
 }
 
 async function verify(token) {
-	console.log("here ", token);
 	const user = await User.findOne({ where: { verificationToken: token } });
 	if (!user) return false;
 
-	console.log("here 2");
 	await user.update({ isVerified: true });
 
-	console.log("here 3");
 	return true;
 }
 
@@ -73,9 +83,9 @@ async function resetPassword(token, password) {
 
 	if (user.passwordResetTokenExpiry < Date.now()) return false;
 
-	const hash = await hashPassword(password);
+	const hashedPassword = await hash(password);
 	await user.update({
-		password: hash,
+		password: hashedPassword,
 		passwordResetToken: null,
 		passwordResetTokenExpiry: null,
 	});
@@ -129,27 +139,66 @@ const sendResetEmail = async (userId) => {
 	return true;
 };
 
-async function hashPassword(password) {
-	return await bcrypt.hash(password, 10);
-}
-
 function generateVerificationToken() {
 	const uniqueID = uuidv4();
 	const hash = crypto.createHash("sha256").update(uniqueID).digest("hex");
 	return hash.slice(0, 32);
 }
 
-const generateAccessToken = async (userId) =>
-	await jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: "24h" });
+const generateAccessToken = (userId) =>
+	jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: "600s" });
+
+const generateRefreshToken = (userId) =>
+	jwt.sign({ userId }, process.env.REFRESH_TOKEN_SECRET, {
+		expiresIn: "30d",
+	});
+
+async function logout(refreshToken) {
+	const hashedToken = hashToken(refreshToken);
+	const dbToken = await RefreshToken.findOne({
+		where: { hash: hashedToken },
+	});
+	if (dbToken) {
+		await dbToken.destroy();
+		return true;
+	}
+	return false;
+}
+
+async function refresh(refreshToken) {
+	const hashedToken = hashToken(refreshToken);
+	const dbToken = await RefreshToken.findOne({
+		where: { hash: hashedToken },
+	});
+
+	if (!dbToken) return false;
+
+	let verified;
+	try {
+		verified = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+		const accessToken = generateAccessToken(verified.userId);
+		const newRefreshToken = generateRefreshToken(verified.userId);
+		const newHashedToken = hashToken(newRefreshToken);
+
+		await dbToken.update({ hash: newHashedToken });
+
+		return { accessToken, refreshToken: newRefreshToken };
+	} catch (err) {
+		return false;
+	}
+}
 
 module.exports = {
 	register,
 	login,
 	verify,
+	hash,
 	forgotPassword,
 	resetPassword,
 	sendVerificationEmail,
 	sendResetEmail,
 	generateVerificationToken,
 	generateAccessToken,
+	logout,
+	refresh,
 };

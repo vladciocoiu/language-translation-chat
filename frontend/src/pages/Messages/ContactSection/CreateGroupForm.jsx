@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { change } from "../../../components/CurrentConversation";
-import axios from "axios";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 const CreateGroupForm = ({ setIsCreatingGroup, setRefreshConversations }) => {
 	const accessToken = useSelector((state) => state.auth.value.accessToken);
-	const currentConversation = useSelector(
-		(state) => state.currentConversation.value
-	);
+	const axiosPrivate = useAxiosPrivate();
+
 	const dispatch = useDispatch();
 	const [name, setName] = useState("");
 
@@ -15,14 +14,9 @@ const CreateGroupForm = ({ setIsCreatingGroup, setRefreshConversations }) => {
 		e.preventDefault();
 		if (name === "") return;
 		try {
-			const response = await axios.post(
+			const response = await axiosPrivate.post(
 				`${import.meta.env.VITE_API_URL}/conversations`,
-				{ name },
-				{
-					headers: {
-						Authorization: `Bearer ${accessToken}`,
-					},
-				}
+				{ name }
 			);
 			if (response.status !== 200) {
 				console.error(new Error("Failed to create group"));

@@ -1,19 +1,19 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import useWebSocket from "react-use-websocket";
-import axios from "axios";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { Comment } from "react-loader-spinner";
 import MessageBubble from "../MessageBubble/MessageBubble.jsx";
 import "./ChatSection.css";
-import { current } from "@reduxjs/toolkit";
 
 const ChatSection = ({ setRefreshConversations }) => {
 	const currentConversation = useSelector(
 		(state) => state.currentConversation.value
 	);
 	const auth = useSelector((state) => state.auth.value);
+	const axiosPrivate = useAxiosPrivate();
 
 	const [messages, setMessages] = useState([]);
 	const [messageText, setMessageText] = useState("");
@@ -54,11 +54,7 @@ const ChatSection = ({ setRefreshConversations }) => {
 				? `/conversations/${currentConversation.id}/messages?offset=0&limit=1000`
 				: `/users/${currentConversation.recipient.id}/messages?offset=0&limit=1000`);
 		try {
-			const response = await axios.get(url, {
-				headers: {
-					Authorization: `Bearer ${auth.accessToken}`,
-				},
-			});
+			const response = await axiosPrivate.get(url);
 			if (response.status !== 200) {
 				console.error(new Error("Failed to get messages"));
 
@@ -109,17 +105,12 @@ const ChatSection = ({ setRefreshConversations }) => {
 		if (!currentConversation.id) return handleCreateConversation(e);
 
 		try {
-			const response = await axios.post(
+			const response = await axiosPrivate.post(
 				`${import.meta.env.VITE_API_URL}/conversations/${
 					currentConversation.id
 				}/messages`,
 				{
 					text: messageText,
-				},
-				{
-					headers: {
-						Authorization: `Bearer ${auth.accessToken}`,
-					},
 				}
 			);
 			if (response.status !== 200) return;
@@ -147,17 +138,12 @@ const ChatSection = ({ setRefreshConversations }) => {
 		)
 			return;
 		try {
-			const response = await axios.post(
+			const response = await axiosPrivate.post(
 				`${import.meta.env.VITE_API_URL}/users/${
 					currentConversation.recipient.id
 				}/messages`,
 				{
 					text: messageText,
-				},
-				{
-					headers: {
-						Authorization: `Bearer ${auth.accessToken}`,
-					},
 				}
 			);
 			if (response.status !== 200) return;

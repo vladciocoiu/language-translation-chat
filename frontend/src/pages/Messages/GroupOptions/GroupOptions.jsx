@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import axios from "axios";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { change } from "../../../components/CurrentConversation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -13,6 +13,7 @@ const GroupOptions = ({ setIsOpen, setRefreshConversations }) => {
 	);
 	const auth = useSelector((state) => state.auth.value);
 	const dispatch = useDispatch();
+	const axiosPrivate = useAxiosPrivate();
 
 	const [addMemberEmail, setAddMemberEmail] = useState("");
 	const [addMemberError, setAddMemberError] = useState(false);
@@ -24,15 +25,10 @@ const GroupOptions = ({ setIsOpen, setRefreshConversations }) => {
 	const handleLeaveGroup = async () => {
 		if (!currentConversation?.id) return;
 		try {
-			const response = await axios.delete(
+			const response = await axiosPrivate.delete(
 				`${import.meta.env.VITE_API_URL}/conversations/${
 					currentConversation.id
-				}/users/${auth.userId}`,
-				{
-					headers: {
-						Authorization: `Bearer ${auth.accessToken}`,
-					},
-				}
+				}/users/${auth.userId}`
 			);
 			if (response.status !== 200) return;
 			dispatch(change(null));
@@ -44,13 +40,8 @@ const GroupOptions = ({ setIsOpen, setRefreshConversations }) => {
 	const handleDeleteGroup = async () => {
 		if (!currentConversation?.id) return;
 		try {
-			const response = await axios.delete(
-				`${import.meta.env.VITE_API_URL}/conversations/${currentConversation.id}`,
-				{
-					headers: {
-						Authorization: `Bearer ${auth.accessToken}`,
-					},
-				}
+			const response = await axiosPrivate.delete(
+				`${import.meta.env.VITE_API_URL}/conversations/${currentConversation.id}`
 			);
 			if (response.status !== 200) return;
 			dispatch(change(null));
@@ -68,16 +59,11 @@ const GroupOptions = ({ setIsOpen, setRefreshConversations }) => {
 			return;
 		}
 		try {
-			const response = await axios.post(
+			const response = await axiosPrivate.post(
 				`${import.meta.env.VITE_API_URL}/conversations/${
 					currentConversation.id
 				}/users`,
-				{ email: addMemberEmail },
-				{
-					headers: {
-						Authorization: `Bearer ${auth.accessToken}`,
-					},
-				}
+				{ email: addMemberEmail }
 			);
 			if (response.status !== 200) {
 				setAddMemberError(true);
@@ -98,15 +84,10 @@ const GroupOptions = ({ setIsOpen, setRefreshConversations }) => {
 	const handleRemoveMember = async (memberId) => {
 		if (!currentConversation?.id) return;
 		try {
-			const response = await axios.delete(
+			const response = await axiosPrivate.delete(
 				`${import.meta.env.VITE_API_URL}/conversations/${
 					currentConversation.id
-				}/users/${memberId}`,
-				{
-					headers: {
-						Authorization: `Bearer ${auth.accessToken}`,
-					},
-				}
+				}/users/${memberId}`
 			);
 			if (response.status !== 200) return;
 			dispatch(

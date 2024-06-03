@@ -71,8 +71,6 @@ async function getMessagesByConversationId(conversationId, offset, limit) {
 		});
 		return result.map((message) => new MessageDTO(message.dataValues));
 	} catch (error) {
-		console.log(error);
-
 		throw new Error("Error fetching messages by conversation id: ", error);
 	}
 }
@@ -276,7 +274,6 @@ async function translateMessage(messageId, targetLanguage, originalLanguage) {
 		});
 		return new TranslationDTO(translation.dataValues);
 	} catch (error) {
-		console.log(error);
 		throw new Error("Error translating message");
 	}
 }

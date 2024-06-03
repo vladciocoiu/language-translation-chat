@@ -8,14 +8,11 @@ const Conversation = require("../models/conversation");
 const ConversationDTO = require("../dtos/conversationDTO");
 const UserDTO = require("../dtos/userDTO");
 
-const { hashPassword } = require("./authService");
-
 async function getUserByEmail(email) {
 	try {
 		const user = await User.findOne({ where: { email } });
 		return user;
 	} catch (error) {
-		console.log(error);
 		throw new Error("Error fetching user by email");
 	}
 }
@@ -86,9 +83,6 @@ async function updateUser(userId, userData) {
 			([key, value]) => fieldsToUpdate.includes(key) && value != null
 		)
 	);
-	if (userData.password) {
-		filteredUserData.password = await hashPassword(userData.password);
-	}
 
 	try {
 		const [numberOfAffectedRows] = await User.update(filteredUserData, {
