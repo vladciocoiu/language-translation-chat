@@ -282,11 +282,13 @@ module.exports = {
 	createMessage,
 	deleteMessage,
 	updateMessage,
+	getMessageLanguage,
 	getMessagesByConversationId,
 	isUserSenderOfMessage,
 	sendDirectMessage,
 	createMessageInConversation,
 	getMessagesByReceiverId,
+	getTranslatedMessage,
 	translateMessage,
 	detectMessageLanguage,
 };
