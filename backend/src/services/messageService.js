@@ -12,9 +12,9 @@ const TranslationDTO = require("../dtos/translationDTO");
 const { where } = require("sequelize");
 
 async function createMessage(messageData) {
-	const { text, senderId, conversationId } = messageData;
+	const { text, senderId, conversationId, image } = messageData;
 
-	if (!text || !senderId || !conversationId) return false;
+	if ((!text && !image) || !senderId || !conversationId) return false;
 
 	// resources don't exist
 	const user = await User.findByPk(senderId);
@@ -88,7 +88,7 @@ async function isUserSenderOfMessage(userId, messageId) {
 	}
 }
 
-async function sendDirectMessage(senderId, receiverId, text) {
+async function sendDirectMessage(senderId, receiverId, text, image) {
 	if (senderId === receiverId) return false;
 
 	try {
@@ -116,6 +116,7 @@ async function sendDirectMessage(senderId, receiverId, text) {
 			text,
 			senderId,
 			conversationId: conversation.id,
+			image,
 		});
 
 		const DBMessage = await Message.findByPk(message.id, {
@@ -198,7 +199,7 @@ async function detectMessageLanguage(messageId) {
 	const detectlanguage = new DetectLanguage(process.env.DETECTLANGUAGE_API_KEY);
 
 	const message = await Message.findByPk(messageId);
-	if (!message) return false;
+	if (!message || !message.text) return false;
 
 	try {
 		const response = await detectlanguage.detectCode(message.text);
@@ -223,12 +224,12 @@ async function getTranslatedMessage(
 	originalLanguage
 ) {
 	const message = await Message.findByPk(messageId);
-	if (!message) return false;
+	if (!message || !message.text) return false;
 
 	// if the message is already in the target language, no need to translate
 	if (originalLanguage === targetLanguage) {
 		return {
-			translatedText: message.dataValues.text,
+			translatedText: message.text,
 			originalLanguage,
 			targetLanguage,
 		};
@@ -260,7 +261,8 @@ async function translateMessage(messageId, targetLanguage, originalLanguage) {
 	}
 
 	const message = await Message.findByPk(messageId);
-	if (!message) return false;
+
+	if (!message || !message.text) return false;
 
 	try {
 		const url = `https://api.mymemory.translated.net/get?q=${message.text}&langpair=${originalLanguage}|${targetLanguage}&de=${process.env.EMAIL_USER}`;

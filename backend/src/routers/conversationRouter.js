@@ -11,6 +11,7 @@ const {
 } = require("../middleware/validateConversationReq");
 
 const { verifyUserInConversation } = require("../middleware/verifyUser");
+const { uploadMessagePicture } = require("../config/fileStorage");
 
 router.post(
 	"/",
@@ -49,6 +50,7 @@ router.get(
 );
 router.post(
 	"/:conversationId/messages",
+	uploadMessagePicture.single("image"),
 	validateCreateMessage,
 	verifyUserInConversation,
 	conversationController.createMessageInConversation

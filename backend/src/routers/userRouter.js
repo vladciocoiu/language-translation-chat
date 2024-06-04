@@ -8,7 +8,10 @@ const {
 	validateSendDM,
 } = require("../middleware/validateUserReq");
 const { verifyUserId } = require("../middleware/verifyUser");
-const { uploadProfilePicture } = require("../config/fileStorage");
+const {
+	uploadProfilePicture,
+	uploadMessagePicture,
+} = require("../config/fileStorage");
 
 router.get("/", userController.getUsersByNameOrEmail);
 router.put(
@@ -34,6 +37,7 @@ router.get(
 
 router.post(
 	"/:userId/messages",
+	uploadMessagePicture.single("image"),
 	validateSendDM,
 	userController.sendDirectMessage
 );

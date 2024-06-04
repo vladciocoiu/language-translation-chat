@@ -1,4 +1,5 @@
 const Linkify = ({ text }) => {
+	if (!text) return;
 	const urlPattern =
 		/(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])|(\bwww\.[-A-Z0-9+&@#\/%?=~_|!:,.;]*)|(\b[-A-Z0-9+&@#\/%?=~_|]+\.[A-Z]{2,}(?:\.[A-Z]{2,})*)/gi;
 	const whitespacePattern = /(\s+)/;
