@@ -26,6 +26,13 @@
 		}
 	}
 
+	.load-more {
+		border: none;
+		margin: 20px 0;
+		padding: 15px 25px;
+		background-color: var(--color-primary-3);
+	}
+
 	.message-list {
 		flex: 9;
 		margin: 5px;

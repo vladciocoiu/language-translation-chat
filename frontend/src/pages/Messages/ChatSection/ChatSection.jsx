@@ -13,6 +13,8 @@ import MessageBubble from "../MessageBubble/MessageBubble.jsx";
 import "./ChatSection.css";
 
 const ChatSection = ({ setRefreshConversations }) => {
+	const PAGE_SIZE = 20;
+
 	const currentConversation = useSelector(
 		(state) => state.currentConversation.value
 	);
@@ -23,6 +25,9 @@ const ChatSection = ({ setRefreshConversations }) => {
 	const [messageText, setMessageText] = useState("");
 	const [file, setFile] = useState(null);
 	const [state, setState] = useState("not_selected");
+	const [scroll, setScroll] = useState(true);
+	const [moreMessages, setMoreMessages] = useState(true);
+
 	const scrollableRef = useRef();
 
 	const webSocketUrl = import.meta.env.VITE_WS_URL;
@@ -48,16 +53,17 @@ const ChatSection = ({ setRefreshConversations }) => {
 			const parsedMessage = parseLastMessage();
 			if (parsedMessage.conversationId !== currentConversation.id) return;
 			setMessages((prevMessages) => [...prevMessages, parsedMessage]);
+			setScroll(true);
 		}
 	}, [lastMessage]);
 
-	async function getMessages() {
+	async function getMessages(offset) {
 		if (!currentConversation?.id && !currentConversation.recipient) return;
 		const url =
 			import.meta.env.VITE_API_URL +
 			(currentConversation.id
-				? `/conversations/${currentConversation.id}/messages?offset=0&limit=1000`
-				: `/users/${currentConversation.recipient.id}/messages?offset=0&limit=1000`);
+				? `/conversations/${currentConversation.id}/messages?offset=${offset}&limit=20`
+				: `/users/${currentConversation.recipient.id}/messages?offset=${offset}&limit=20`);
 		try {
 			const response = await axiosPrivate.get(url);
 			if (response.status !== 200) {
@@ -65,7 +71,9 @@ const ChatSection = ({ setRefreshConversations }) => {
 
 				return [];
 			} else {
-				setMessages(response.data.messages);
+				if (response.data.messages.length < PAGE_SIZE) setMoreMessages(false);
+
+				setMessages((m) => [...response.data.messages].reverse().concat(m));
 				setState("ready");
 			}
 			return response.data.messages;
@@ -76,12 +84,20 @@ const ChatSection = ({ setRefreshConversations }) => {
 	}
 
 	useEffect(() => {
+		const get = async () => {
+			await getMessages(0);
+			setScroll(true);
+		};
 		if (
 			currentConversation &&
 			(currentConversation.id || currentConversation.recipient)
 		) {
 			setState("loading");
-			getMessages();
+
+			setMessages([]);
+			setMoreMessages(true);
+
+			get();
 		} else {
 			setState("not_selected");
 		}
@@ -95,7 +111,8 @@ const ChatSection = ({ setRefreshConversations }) => {
 
 	useEffect(() => {
 		scrollToBottom();
-	}, [messages]);
+		setScroll(false);
+	}, [scroll]);
 
 	const handleMessageChange = (e) => {
 		if (e.target.value.length > 255) return;
@@ -146,6 +163,7 @@ const ChatSection = ({ setRefreshConversations }) => {
 			sendMessage(JSON.stringify(responseMessage));
 
 			setMessages([...messages, responseMessage]);
+			setScroll(true);
 		} catch (error) {
 			console.error(error);
 			return;
@@ -224,10 +242,21 @@ const ChatSection = ({ setRefreshConversations }) => {
 					/>
 				)}
 
-				{state === "ready" &&
-					messages.map((message, index) => (
-						<MessageBubble key={index} message={message} setMessages={setMessages} />
-					))}
+				{state === "ready" && (
+					<>
+						{moreMessages && (
+							<button
+								className="load-more"
+								onClick={() => getMessages(messages.length)}
+							>
+								Load more messages
+							</button>
+						)}
+						{messages.map((message, index) => (
+							<MessageBubble key={index} message={message} setMessages={setMessages} />
+						))}
+					</>
+				)}
 			</div>
 			<form className="message-input" onSubmit={handleSendMessage}>
 				<input
