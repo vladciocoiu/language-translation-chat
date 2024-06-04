@@ -32,6 +32,9 @@ app.use(compression());
 app.use(helmet());
 app.use(cookieParser());
 
+// sync db tables
+require("../src/models/index");
+
 // import and use routers
 const apiRouter = require("./routers/index");
 app.use("/api", apiRouter);
