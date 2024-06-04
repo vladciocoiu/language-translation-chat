@@ -1,4 +1,4 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, literal } = require("sequelize");
 
 const sequelize = require("../config/database");
 
@@ -13,6 +13,11 @@ const Message = sequelize.define("Message", {
 	image: {
 		type: DataTypes.STRING,
 		allowNull: true,
+	},
+	createdAt: {
+		type: DataTypes.DATE(3),
+		allowNull: false,
+		defaultValue: literal("CURRENT_TIMESTAMP(3)"),
 	},
 });
 
