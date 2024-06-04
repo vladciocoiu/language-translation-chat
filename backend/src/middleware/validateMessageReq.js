@@ -1,7 +1,7 @@
 const Joi = require("joi");
 
 const updateMessageSchema = Joi.object({
-	text: Joi.string().trim().min(1).required(),
+	text: Joi.string().trim().min(1).max(255).required(),
 });
 
 exports.validateUpdateMessage = (req, res, next) => {

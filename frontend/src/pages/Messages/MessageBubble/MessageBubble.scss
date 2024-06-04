@@ -9,6 +9,9 @@
 		font-size: 16px;
 		margin: 0;
 		padding: 0;
+		span {
+			overflow-wrap: break-word;
+		}
 	}
 
 	.message-timestamp {
@@ -40,6 +43,10 @@
 		top: 9px;
 	}
 	.message-sender {
+		max-width: 140px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 		font-size: 14px;
 		left: -5px;
 		color: var(--color-secondary);
@@ -59,4 +66,16 @@
 	align-self: flex-start;
 	padding-top: 0;
 	min-width: 180px;
+}
+
+@media screen and (max-width: 1024px) {
+	.message-bubble {
+		max-width: 300px;
+	}
+}
+
+@media screen and (max-width: 870px) {
+	.message-bubble {
+		max-width: 200px;
+	}
 }

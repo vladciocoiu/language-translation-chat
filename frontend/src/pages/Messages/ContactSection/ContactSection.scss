@@ -72,6 +72,9 @@
 	background-color: var(--color-primary);
 
 	p {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 		margin: 0;
 		padding: 20px 20px;
 	}

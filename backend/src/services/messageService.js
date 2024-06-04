@@ -30,6 +30,7 @@ async function createMessage(messageData) {
 	try {
 		return await Message.create(messageData);
 	} catch (error) {
+		console.log(error);
 		throw new Error("Error creating message");
 	}
 }

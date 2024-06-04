@@ -6,10 +6,12 @@
   border-radius: 10px;
   display: grid;
   grid-template-areas: "pic name" "email email";
+  grid-template-columns: 32px 1fr;
   justify-items: center;
   align-items: center;
   gap: 20px;
   z-index: 5;
+  max-width: 300px;
   box-shadow: 1px 1px 5px 1px var(--color-primary);
 }
 .conversation-card .profile-picture {
@@ -21,8 +23,12 @@
   grid-area: pic;
 }
 .conversation-card h2 {
+  max-width: 100%;
   grid-area: name;
   margin: 0;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 .conversation-card p {
   margin: 0;

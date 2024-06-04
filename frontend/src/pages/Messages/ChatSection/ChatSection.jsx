@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import useWebSocket from "react-use-websocket";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane, faImage } from "@fortawesome/free-solid-svg-icons";
 import { Comment } from "react-loader-spinner";
 import MessageBubble from "../MessageBubble/MessageBubble.jsx";
 import "./ChatSection.css";
@@ -93,6 +93,7 @@ const ChatSection = ({ setRefreshConversations }) => {
 	}, [messages]);
 
 	const handleMessageChange = (e) => {
+		if (e.target.value.length > 255) return;
 		setMessageText(e.target.value);
 	};
 
@@ -198,6 +199,9 @@ const ChatSection = ({ setRefreshConversations }) => {
 					value={messageText}
 					onChange={handleMessageChange}
 				/>
+				<button>
+					<FontAwesomeIcon icon={faImage} />
+				</button>
 				<button type="submit">
 					<FontAwesomeIcon icon={faPaperPlane} />
 				</button>

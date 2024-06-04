@@ -1,11 +1,11 @@
 const Joi = require("joi");
 
 const createConversationSchema = Joi.object({
-	name: Joi.string().trim().min(1).required(),
+	name: Joi.string().trim().min(1).max(50).required(),
 });
 
 const updateConversationSchema = Joi.object({
-	name: Joi.string().trim().min(1).required(),
+	name: Joi.string().trim().min(1).max(50).required(),
 });
 
 const addUserToConversationSchema = Joi.object({
@@ -22,7 +22,7 @@ const addUserToConversationSchema = Joi.object({
 });
 
 const createMessageSchema = Joi.object({
-	text: Joi.string().trim().min(1).required(),
+	text: Joi.string().trim().min(1).max(255).required(),
 });
 
 exports.validateCreateConversation = (req, res, next) => {

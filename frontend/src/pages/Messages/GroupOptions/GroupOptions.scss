@@ -22,6 +22,13 @@
 			margin-top: 8px;
 		}
 
+		h2 {
+			max-width: 100%;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
 		button {
 			border: none;
 			background-color: var(--color-primary);
@@ -46,6 +53,20 @@
 			position: relative;
 			gap: 20px;
 			width: 100%;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			.member-name {
+				max-width: calc(100% - 25px);
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+			.member-info {
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
 		}
 		li p {
 			margin: 0;
@@ -91,6 +112,16 @@
 			background: none;
 			padding: 0;
 			margin: 0;
+		}
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.group-options-overlay {
+		.group-options {
+			padding: 10vw;
+			width: 80vw;
+			height: 50vh;
 		}
 	}
 }
