@@ -338,7 +338,7 @@ describe("Message Service", () => {
 		});
 
 		it("should return the same text if the message is already in the requested language", async () => {
-			sinon.stub(Message, "findByPk").returns({ dataValues: { text: "test" } });
+			sinon.stub(Message, "findByPk").returns({ text: "test" });
 			const message = await messageService.getTranslatedMessage(1, "en", "en");
 			expect(message).to.eql({
 				translatedText: "test",
@@ -348,7 +348,7 @@ describe("Message Service", () => {
 		});
 
 		it("should return the translated message if translation exists", async () => {
-			sinon.stub(Message, "findByPk").returns({ dataValues: { text: "test" } });
+			sinon.stub(Message, "findByPk").returns({ text: "test" });
 			sinon.stub(Translation, "findOne").returns({ dataValues: translationMock });
 			const message = await messageService.getTranslatedMessage(1, "en", "ro");
 			expect(message).to.eql(translationMock);
@@ -361,16 +361,21 @@ describe("Message Service", () => {
 		});
 	});
 	describe("translateMessage", () => {
-		beforeEach(() => {
-			sinon.stub(Message, "findByPk").returns({ dataValues: { text: "test" } });
-		});
 		it("should return the translated message if translation exists", async () => {
+			sinon.stub(Message, "findByPk").returns({ text: "test" });
 			sinon.stub(Translation, "findOne").returns({ dataValues: translationMock });
 			const message = await messageService.translateMessage(1, "ro", "en");
 			expect(message).to.eql(new TranslationDTO(translationMock));
 		});
+		it("should return false if message does not have text", async () => {
+			sinon.stub(Message, "findByPk").returns({ text: null });
+			const message = await messageService.translateMessage(1, "ro", "en");
+			expect(message).to.equal(false);
+		});
 		it("should call axios.get, Translation.create, and return translation if translation does not exist", async () => {
 			sinon.stub(Translation, "findOne").returns(null);
+			sinon.stub(Message, "findByPk").returns({ text: "test" });
+
 			const axiosStub = sinon
 				.stub(axios, "get")
 				.returns({ data: { responseData: { translatedText: "ceva" } } });

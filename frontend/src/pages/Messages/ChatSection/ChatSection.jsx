@@ -3,7 +3,11 @@ import { useSelector } from "react-redux";
 import useWebSocket from "react-use-websocket";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperPlane, faImage } from "@fortawesome/free-solid-svg-icons";
+import {
+	faPaperPlane,
+	faImage,
+	faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import { Comment } from "react-loader-spinner";
 import MessageBubble from "../MessageBubble/MessageBubble.jsx";
 import "./ChatSection.css";
@@ -17,6 +21,7 @@ const ChatSection = ({ setRefreshConversations }) => {
 
 	const [messages, setMessages] = useState([]);
 	const [messageText, setMessageText] = useState("");
+	const [file, setFile] = useState(null);
 	const [state, setState] = useState("not_selected");
 	const scrollableRef = useRef();
 
@@ -97,21 +102,42 @@ const ChatSection = ({ setRefreshConversations }) => {
 		setMessageText(e.target.value);
 	};
 
+	const handleFileChange = (e) => {
+		const chosenFile = e.target.files[0];
+		if (chosenFile) {
+			setFile(chosenFile);
+		}
+	};
+
+	const handleFileDelete = (e) => {
+		e.stopPropagation();
+		setFile(null);
+	};
+
 	const handleSendMessage = async (e) => {
 		e.preventDefault();
-		if (!messageText) return;
+		if (!messageText && !file) return;
 
 		if (!currentConversation) return;
 
 		if (!currentConversation.id) return handleCreateConversation(e);
+
+		const formData = new FormData();
+		formData.append("image", file);
+
+		const json = messageText ? { text: messageText } : {};
+		formData.append("json", JSON.stringify(json));
 
 		try {
 			const response = await axiosPrivate.post(
 				`${import.meta.env.VITE_API_URL}/conversations/${
 					currentConversation.id
 				}/messages`,
+				formData,
 				{
-					text: messageText,
+					headers: {
+						"Content-Type": "multipart/form-data",
+					},
 				}
 			);
 			if (response.status !== 200) return;
@@ -126,11 +152,12 @@ const ChatSection = ({ setRefreshConversations }) => {
 		}
 
 		setMessageText("");
+		setFile(null);
 	};
 
 	const handleCreateConversation = async (e) => {
 		e.preventDefault();
-		if (!messageText) return;
+		if (!messageText && !file) return;
 
 		if (
 			!currentConversation ||
@@ -138,13 +165,23 @@ const ChatSection = ({ setRefreshConversations }) => {
 			!currentConversation.recipient.id
 		)
 			return;
+
+		const formData = new FormData();
+		formData.append("image", file);
+
+		const json = messageText ? { text: messageText } : {};
+		formData.append("json", JSON.stringify(json));
+
 		try {
 			const response = await axiosPrivate.post(
 				`${import.meta.env.VITE_API_URL}/users/${
 					currentConversation.recipient.id
 				}/messages`,
+				formData,
 				{
-					text: messageText,
+					headers: {
+						"Content-Type": "multipart/form-data",
+					},
 				}
 			);
 			if (response.status !== 200) return;
@@ -199,9 +236,23 @@ const ChatSection = ({ setRefreshConversations }) => {
 					value={messageText}
 					onChange={handleMessageChange}
 				/>
-				<button>
+				<label className="file-upload">
+					<input
+						type="file"
+						className="file-input"
+						onChange={handleFileChange}
+						accept="image/*"
+					/>
 					<FontAwesomeIcon icon={faImage} />
-				</button>
+					{file && (
+						<FontAwesomeIcon
+							className="delete-file"
+							icon={faXmark}
+							onClick={handleFileDelete}
+						/>
+					)}
+					{file && <img src={URL.createObjectURL(file)} alt="preview" />}
+				</label>
 				<button type="submit">
 					<FontAwesomeIcon icon={faPaperPlane} />
 				</button>

@@ -114,6 +114,7 @@ exports.createMessageInConversation = async (req, res) => {
 
 	// get info from req body
 	const { text } = req.validatedPayload;
+	const image = req.file?.path;
 
 	const senderId = req.user.userId;
 
@@ -124,6 +125,7 @@ exports.createMessageInConversation = async (req, res) => {
 			text,
 			senderId,
 			conversationId,
+			image,
 		});
 	} catch (err) {
 		return res.status(500).json({ error: err });

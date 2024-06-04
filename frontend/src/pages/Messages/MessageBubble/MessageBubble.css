@@ -51,6 +51,12 @@
   font-weight: bold;
   cursor: default;
 }
+.message-bubble .message-image {
+  width: 300px;
+  max-width: 100%;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
 
 .message-bubble.sent {
   background-color: var(--color-secondary);

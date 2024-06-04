@@ -6,7 +6,7 @@ const updateUserSchema = Joi.object({
 });
 
 const sendDMSchema = Joi.object({
-	text: Joi.string().trim().min(1).required(),
+	text: Joi.string().trim().min(1),
 });
 
 exports.validateUpdateUser = async (req, res, next) => {
@@ -29,7 +29,14 @@ exports.validateUpdateUser = async (req, res, next) => {
 };
 
 exports.validateSendDM = (req, res, next) => {
-	const { error, value } = sendDMSchema.validate(req.body);
+	let json;
+
+	try {
+		json = JSON.parse(req.body.json);
+	} catch (err) {
+		return res.status(400).json({ error: "Invalid JSON data" });
+	}
+	const { error, value } = sendDMSchema.validate(json);
 
 	if (error)
 		return res

@@ -8,7 +8,7 @@ const Conversation = require("./conversation");
 const Message = sequelize.define("Message", {
 	text: {
 		type: DataTypes.STRING(255),
-		allowNull: false,
+		allowNull: true,
 	},
 	image: {
 		type: DataTypes.STRING,

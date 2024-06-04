@@ -22,7 +22,7 @@ const addUserToConversationSchema = Joi.object({
 });
 
 const createMessageSchema = Joi.object({
-	text: Joi.string().trim().min(1).max(255).required(),
+	text: Joi.string().trim().min(1).max(255),
 });
 
 exports.validateCreateConversation = (req, res, next) => {
@@ -62,7 +62,14 @@ exports.validateAddUserToConversation = (req, res, next) => {
 };
 
 exports.validateCreateMessage = (req, res, next) => {
-	const { error, value } = createMessageSchema.validate(req.body);
+	let json;
+
+	try {
+		json = JSON.parse(req.body.json);
+	} catch (err) {
+		return res.status(400).json({ error: "Invalid JSON data" });
+	}
+	const { error, value } = createMessageSchema.validate(json);
 
 	if (error)
 		return res

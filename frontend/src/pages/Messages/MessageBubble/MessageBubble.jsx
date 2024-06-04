@@ -60,19 +60,32 @@ const MessageBubble = ({ message, setMessages }) => {
 		>
 			{message.sender.id !== userId && (
 				<div className="message-details">
-					<button className="toggle-translate" onClick={handleTranslate}>
-						{isTranslated ? "Show original" : "Translate"}
-					</button>
-					{currentConversation.isGroup && (
+					{message.text && (
+						<button className="toggle-translate" onClick={handleTranslate}>
+							{isTranslated ? "Show original" : "Translate"}
+						</button>
+					)}
+					{currentConversation.isGroup ? (
 						<p className="message-sender">{message.sender.name}</p>
+					) : (
+						""
 					)}
 				</div>
 			)}
-			<p className="message-text">
-				<Linkify
-					text={isTranslated ? message.translation.translatedText : message.text}
+			{message.image && (
+				<img
+					className="message-image"
+					src={`${import.meta.env.VITE_BACKEND_URL}/${message.image}`}
+					alt="image"
 				/>
-			</p>
+			)}
+			{message.text && (
+				<p className="message-text">
+					<Linkify
+						text={isTranslated ? message.translation?.translatedText : message.text}
+					/>
+				</p>
+			)}
 			<p className="message-timestamp">
 				{getDateStringFromTimestamp(message.createdAt)}
 			</p>
