@@ -20,6 +20,10 @@
 }
 .chat-section .chat-section-header .contact-name {
   font-weight: bold;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .chat-section .message-list {
   flex: 9;
@@ -43,6 +47,7 @@
   background-color: var(--color-primary-2);
   border-top: 1px dotted var(--color-primary-3);
   padding: 0;
+  padding-right: 20px;
 }
 .chat-section .message-input input {
   flex: 1;
@@ -55,7 +60,7 @@
   font-size: 16px;
 }
 .chat-section .message-input button {
-  padding: 10px 30px;
+  padding: 15px;
   border: none;
   outline: none;
   background: none;
@@ -76,6 +81,16 @@
   text-align: center;
 }
 
+@media screen and (max-width: 1024px) {
+  .chat-section .chat-section-header .contact-name {
+    width: 200px;
+  }
+}
+@media screen and (max-width: 900px) {
+  .chat-section .chat-section-header .contact-name {
+    width: 150px;
+  }
+}
 @media screen and (max-width: 640px) {
   .chat-section .chat-section-header {
     font-size: 16px;
@@ -95,8 +110,19 @@
     padding: 0 10px;
     font-size: 14px;
   }
+}
+@media screen and (max-width: 520px) {
+  .chat-section .chat-section-header .contact-name {
+    width: 200px;
+  }
+}
+@media screen and (max-width: 450px) {
+  .chat-section .chat-section-header .contact-name {
+    font-size: 16px;
+    width: 130px;
+  }
   .chat-section .message-input button {
-    padding: 10px 20px;
+    padding: 10px;
   }
   .chat-section .message-input button svg {
     width: 18px;

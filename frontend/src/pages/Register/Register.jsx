@@ -15,6 +15,7 @@ const Register = () => {
 	const auth = useSelector((state) => state.auth.value);
 
 	const handleDisplayNameChange = (e) => {
+		if (e.target.value.length > 30) return;
 		setDisplayName(e.target.value);
 	};
 

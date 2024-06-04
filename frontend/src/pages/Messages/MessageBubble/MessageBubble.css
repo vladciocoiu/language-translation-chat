@@ -10,6 +10,9 @@
   margin: 0;
   padding: 0;
 }
+.message-bubble .message-text span {
+  overflow-wrap: break-word;
+}
 .message-bubble .message-timestamp {
   font-size: 10px;
   margin: 0;
@@ -38,6 +41,10 @@
   top: 9px;
 }
 .message-bubble .message-sender {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 14px;
   left: -5px;
   color: var(--color-secondary);
@@ -56,4 +63,15 @@
   align-self: flex-start;
   padding-top: 0;
   min-width: 180px;
+}
+
+@media screen and (max-width: 1024px) {
+  .message-bubble {
+    max-width: 300px;
+  }
+}
+@media screen and (max-width: 870px) {
+  .message-bubble {
+    max-width: 200px;
+  }
 }/*# sourceMappingURL=MessageBubble.css.map */

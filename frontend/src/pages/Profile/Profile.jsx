@@ -112,6 +112,10 @@ const Profile = () => {
 		const success = await editUser();
 		if (success) navigate("/messages");
 	};
+	const handleChangeName = (e) => {
+		if (e.target.value.length > 30) return;
+		setCurrentName(e.target.value);
+	};
 
 	const handleLogout = async () => {
 		try {
@@ -142,7 +146,7 @@ const Profile = () => {
 				<input
 					type="text"
 					value={currentName}
-					onChange={(e) => setCurrentName(e.target.value)}
+					onChange={handleChangeName}
 					onKeyDown={handleNameKeyDown}
 					className="name-input"
 					placeholder="Name"

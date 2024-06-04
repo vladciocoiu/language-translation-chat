@@ -8,7 +8,7 @@ const Conversation = sequelize.define("Conversation", {
 		allowNull: false,
 	},
 	name: {
-		type: DataTypes.STRING,
+		type: DataTypes.STRING(50),
 		allowNull: true,
 		unique: true,
 	},

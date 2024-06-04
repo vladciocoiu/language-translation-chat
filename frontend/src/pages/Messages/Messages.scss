@@ -81,8 +81,31 @@
 
 @media screen and (max-width: 600px) {
 	.icon-button.contact-section-toggle svg,
-	.icon-button.search-section-toggle svg {
+	.icon-button.search-section-toggle svg,
+	.icon-button.group-options-toggle svg,
+	.icon-button.profile-link svg {
 		width: 20px;
 		height: 20px;
+	}
+}
+
+@media screen and (max-width: 500px) {
+	.contact-section-toggle.icon-button,
+	.search-section-toggle.icon-button,
+	.group-options-toggle.icon-button,
+	.profile-link.icon-button {
+		margin: 30px 5px;
+	}
+	.profile-link.icon-button {
+		right: 5px;
+	}
+
+	.contact-section-toggle.open,
+	.contact-section-toggle.closed {
+		left: 5px;
+	}
+
+	.search-section-toggle.open {
+		left: calc(100vw - 39px);
 	}
 }

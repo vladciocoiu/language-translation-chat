@@ -2,7 +2,7 @@ const Joi = require("joi");
 
 // validation schema for register form
 const registerSchema = Joi.object({
-	name: Joi.string().trim().min(3).required(),
+	name: Joi.string().trim().min(3).max(30).required(),
 	email: Joi.string().min(3).required().email(),
 	password: Joi.string().min(6).required(),
 });

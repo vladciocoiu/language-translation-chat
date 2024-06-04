@@ -31,6 +31,11 @@ const CreateGroupForm = ({ setIsCreatingGroup, setRefreshConversations }) => {
 		}
 	};
 
+	const handleNameChange = (e) => {
+		if (e.target.value.length > 50) return;
+		setName(e.target.value);
+	};
+
 	const handleCloseForm = (e) => {
 		e.preventDefault();
 		e.stopPropagation();
@@ -44,7 +49,7 @@ const CreateGroupForm = ({ setIsCreatingGroup, setRefreshConversations }) => {
 					<input
 						type="text"
 						placeholder="Group name"
-						onChange={(e) => setName(e.target.value)}
+						onChange={handleNameChange}
 						value={name}
 					/>
 					<button type="submit">Create</button>
