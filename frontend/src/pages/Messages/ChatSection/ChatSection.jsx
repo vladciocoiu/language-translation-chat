@@ -10,6 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Comment } from "react-loader-spinner";
 import MessageBubble from "../MessageBubble/MessageBubble.jsx";
+import useRefreshToken from "../../../hooks/useRefreshToken.js";
 import "./ChatSection.css";
 
 const ChatSection = ({ setRefreshConversations }) => {
@@ -20,6 +21,7 @@ const ChatSection = ({ setRefreshConversations }) => {
 	);
 	const auth = useSelector((state) => state.auth.value);
 	const axiosPrivate = useAxiosPrivate();
+	const refresh = useRefreshToken();
 
 	const [messages, setMessages] = useState([]);
 	const [messageText, setMessageText] = useState("");
@@ -32,9 +34,18 @@ const ChatSection = ({ setRefreshConversations }) => {
 
 	const webSocketUrl = import.meta.env.VITE_WS_URL;
 	const { sendMessage, lastMessage, readyState } = useWebSocket(webSocketUrl, {
-		onOpen: () => console.log("Connected"),
-		onClose: () => console.log("Disconnected"),
-		onError: (error) => console.log("WebSocket Error:", error),
+		onOpen: () => console.log("Connected to WebSocket server"),
+		onClose: (e) => {
+			if (e.code === 4002) {
+				console.log("Access token expired, refreshing...");
+				refresh();
+			} else {
+				console.log("Disconnected from WebSocket server: ", e.code);
+			}
+		},
+		onError: async (error) => {
+			console.log("WebSocket Error:", error);
+		},
 		protocols: auth.accessToken,
 		shouldReconnect: () => true,
 	});
