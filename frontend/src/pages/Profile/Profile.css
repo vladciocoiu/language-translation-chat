@@ -14,7 +14,7 @@
 .profile-page h2,
 .profile-page .name-input {
   font-size: 25px;
-  width: 200px;
+  width: 300px;
   background: none;
   border: none;
   padding: 0;
@@ -32,6 +32,7 @@
 }
 .profile-page h2 {
   cursor: pointer;
+  overflow-wrap: break-word;
 }
 .profile-page .name-input {
   border-bottom: 1px solid white;
@@ -54,4 +55,10 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
+}
+
+@media screen and (max-width: 700px) {
+  .profile-page h2 {
+    font-size: 20px;
+  }
 }/*# sourceMappingURL=Profile.css.map */

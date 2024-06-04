@@ -14,7 +14,7 @@ const initWebSocketServer = async () => {
 		try {
 			verifyTokenForWs(token, ws, () => handleConnection(ws, ws.user, wss));
 		} catch (error) {
-			console.error("WebSocket connection error:", error);
+			console.log("WebSocket error: Invalid Token");
 			ws.close(4002, "Invalid token");
 		}
 	});
