@@ -67,6 +67,7 @@ async function getMessagesByConversationId(conversationId, offset, limit) {
 		const result = await Message.findAll({
 			where: { conversationId },
 			include: User,
+			order: [["createdAt", "DESC"]],
 			offset: parseInt(offset),
 			limit: parseInt(limit),
 		});
