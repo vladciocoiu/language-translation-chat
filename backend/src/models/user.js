@@ -43,14 +43,4 @@ const User = sequelize.define("User", {
 	},
 });
 
-// Sync the model with the database (creates the table if it doesn't exist)
-(async () => {
-	try {
-		await User.sync();
-		console.log("User table synced");
-	} catch (error) {
-		console.error("Error syncing User table: ", error);
-	}
-})();
-
 module.exports = User;

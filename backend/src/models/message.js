@@ -34,14 +34,4 @@ if (Conversation) {
 	});
 }
 
-// Sync the model with the database (creates the table if it doesn't exist)
-(async () => {
-	try {
-		await Message.sync();
-		console.log("Message table synced");
-	} catch (error) {
-		console.error("Error syncing Message table: ", error);
-	}
-})();
-
 module.exports = Message;

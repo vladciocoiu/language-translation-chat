@@ -29,14 +29,4 @@ if (Message) {
 	});
 }
 
-// Sync the model with the database (creates the table if it doesn't exist)
-(async () => {
-	try {
-		await Translation.sync();
-		console.log("Translation table synced");
-	} catch (error) {
-		console.error("Error syncing Translation table: ", error);
-	}
-})();
-
 module.exports = Translation;
