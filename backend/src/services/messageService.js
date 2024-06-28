@@ -126,6 +126,7 @@ async function sendDirectMessage(senderId, receiverId, text, image) {
 
 		return new MessageDTO(DBMessage.dataValues);
 	} catch (error) {
+		console.log(error);
 		throw new Error("Error sending direct message");
 	}
 }
@@ -193,6 +194,7 @@ async function getMessageLanguage(messageId) {
 // firstly try to get the language from the translation table
 // second try to detect language using detectlanguage API
 // if it fails, consider the language of the sender
+
 async function detectMessageLanguage(messageId) {
 	const language = await getMessageLanguage(messageId);
 	if (language) return language;
@@ -205,13 +207,23 @@ async function detectMessageLanguage(messageId) {
 	try {
 		const response = await detectlanguage.detectCode(message.text);
 		if (!response) throw new Error("Error detecting language from API.");
-		return JSON.stringify(response).replace(/"/g, "");
+
+		const lang = JSON.stringify(response).replace(/"/g, "");
+
+		if (!["en", "fr", "it", "ro"].find((l) => l === lang)) {
+			console.log(
+				`Language for messageId=${message.id} not supported. Will consider it as ${sender.language}.`
+			);
+			return sender.language;
+		}
+		return lang;
 	} catch (error) {
 		try {
 			const sender = await User.findByPk(message.senderId);
 			console.log(
 				`Failed to detect language for messageId=${message.id}. Will consider it as ${sender.language}.`
 			);
+
 			return sender.language;
 		} catch (error) {
 			throw new Error("Error fetching sender by message id");
@@ -278,6 +290,7 @@ async function translateMessage(messageId, targetLanguage, originalLanguage) {
 		});
 		return new TranslationDTO(translation.dataValues);
 	} catch (error) {
+		console.log(error);
 		throw new Error("Error translating message");
 	}
 }

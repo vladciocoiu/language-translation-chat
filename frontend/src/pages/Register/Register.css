@@ -13,9 +13,10 @@
   font-size: 16px;
   font-weight: bold;
   text-align: center;
-  width: 200px;
+  text-wrap: nowrap;
+  width: 100vw;
   top: 17%;
-  left: calc(50% - 100px);
+  left: 0;
 }
 
 .register-box {

@@ -39,9 +39,6 @@ exports.login = async (req, res) => {
 		return res.status(500).json({ error: err });
 	}
 
-	// add token to response header
-	res.header("authentication", "Bearer " + user.accessToken);
-
 	// add refresh token to cookie
 	if (req.cookies["refreshToken"]) {
 		res.clearCookie("refreshToken", {
@@ -50,6 +47,10 @@ exports.login = async (req, res) => {
 			secure: true,
 		});
 	}
+
+	// add token to response header
+	res.header("authentication", "Bearer " + user.accessToken);
+
 	res.cookie("refreshToken", user.refreshToken, {
 		httpOnly: true,
 		sameSite: "None",
@@ -114,8 +115,7 @@ exports.logout = async (req, res) => {
 		secure: true,
 	});
 
-	if (!refreshToken)
-		return res.status(400).json({ error: "No refresh token provided." });
+	if (!refreshToken) return res.json({ warning: "No refresh token provided." });
 
 	try {
 		const success = await authService.logout(refreshToken);

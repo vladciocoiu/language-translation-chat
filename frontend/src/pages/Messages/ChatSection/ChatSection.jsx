@@ -175,13 +175,13 @@ const ChatSection = ({ setRefreshConversations }) => {
 
 			setMessages([...messages, responseMessage]);
 			setScroll(true);
+
+			setMessageText("");
+			setFile(null);
 		} catch (error) {
 			console.error(error);
 			return;
 		}
-
-		setMessageText("");
-		setFile(null);
 	};
 
 	const handleCreateConversation = async (e) => {
@@ -218,12 +218,13 @@ const ChatSection = ({ setRefreshConversations }) => {
 			const responseMessage = response.data.message;
 			setMessages([...messages, responseMessage]);
 			setRefreshConversations(true);
+
+			setFile(null);
+			setMessageText("");
 		} catch (error) {
 			console.error(error);
 			return;
 		}
-
-		setMessageText("");
 	};
 
 	return (
@@ -234,13 +235,15 @@ const ChatSection = ({ setRefreshConversations }) => {
 				</p>
 			</div>
 			<div className="message-list" ref={scrollableRef}>
-				{state === "not_selected" && (
+				{state === "not_selected" ? (
 					<div className="not-selected">
 						<p>Select a conversation to start chatting!</p>
 					</div>
+				) : (
+					""
 				)}
 
-				{state === "loading" && (
+				{state === "loading" ? (
 					<Comment
 						visible={true}
 						height="80"
@@ -251,22 +254,28 @@ const ChatSection = ({ setRefreshConversations }) => {
 						color="#fff"
 						backgroundColor="var(--color-primary-3)"
 					/>
+				) : (
+					""
 				)}
 
-				{state === "ready" && (
+				{state === "ready" ? (
 					<>
-						{moreMessages && (
+						{moreMessages ? (
 							<button
 								className="load-more"
 								onClick={() => getMessages(messages.length)}
 							>
 								Load more messages
 							</button>
+						) : (
+							""
 						)}
 						{messages.map((message, index) => (
 							<MessageBubble key={index} message={message} setMessages={setMessages} />
 						))}
 					</>
+				) : (
+					""
 				)}
 			</div>
 			<form className="message-input" onSubmit={handleSendMessage}>
@@ -284,14 +293,16 @@ const ChatSection = ({ setRefreshConversations }) => {
 						accept="image/*"
 					/>
 					<FontAwesomeIcon icon={faImage} />
-					{file && (
+					{file ? (
 						<FontAwesomeIcon
 							className="delete-file"
 							icon={faXmark}
 							onClick={handleFileDelete}
 						/>
+					) : (
+						""
 					)}
-					{file && <img src={URL.createObjectURL(file)} alt="preview" />}
+					{file ? <img src={URL.createObjectURL(file)} alt="preview" /> : ""}
 				</label>
 				<button type="submit">
 					<FontAwesomeIcon icon={faPaperPlane} />
