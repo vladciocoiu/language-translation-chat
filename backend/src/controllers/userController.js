@@ -71,9 +71,11 @@ exports.sendDirectMessage = async (req, res) => {
 
 	const senderId = req.user.userId;
 
+	const image = req.file?.path;
+
 	let message;
 	try {
-		message = await sendDirectMessage(senderId, userId, text);
+		message = await sendDirectMessage(senderId, userId, text, image);
 	} catch (err) {
 		return res.status(500).json({ error: err });
 	}

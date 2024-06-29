@@ -34,9 +34,7 @@ async function register(name, email, password) {
 async function login(email, password) {
 	const user = await User.findOne({ where: { email } });
 
-	if (!user) return false;
-
-	if (!user.isVerified) return false;
+	if (!user || !user.isVerified) return false;
 
 	const validPassword = await bcrypt.compare(password, user.password);
 	if (!validPassword) return false;

@@ -52,7 +52,7 @@ const Messages = () => {
 			/>
 
 			<ChatSection setRefreshConversations={setRefreshConversations} />
-			{cardIsOpen && <ConversationCard setCardIsOpen={setCardIsOpen} />}
+			{cardIsOpen ? <ConversationCard setCardIsOpen={setCardIsOpen} /> : ""}
 			<button
 				className={
 					"contact-section-toggle icon-button" +
@@ -71,22 +71,26 @@ const Messages = () => {
 			>
 				<FontAwesomeIcon icon={isSearchSectionOpen ? faXmark : faMagnifyingGlass} />
 			</button>
-			{currentConversation && currentConversation.isGroup && (
+			{currentConversation && currentConversation.isGroup ? (
 				<button
 					className="group-options-toggle icon-button"
 					onClick={() => setIsGroupOptionsOpen(true)}
 				>
 					<FontAwesomeIcon icon={faUsers} />
 				</button>
+			) : (
+				""
 			)}
 			<Link to={"/profile"} className="profile-link icon-button">
 				<FontAwesomeIcon icon={faUser} />
 			</Link>
-			{isGroupOptionsOpen && (
+			{isGroupOptionsOpen ? (
 				<GroupOptions
 					setIsOpen={setIsGroupOptionsOpen}
 					setRefreshConversations={setRefreshConversations}
 				/>
+			) : (
+				""
 			)}
 		</div>
 	);
