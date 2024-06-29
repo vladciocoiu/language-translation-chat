@@ -28,7 +28,7 @@
 		"nodemailer": "^6.9.13",
 		"sequelize": "^6.37.1",
 		"uuid": "^9.0.1",
-		"ws": "^8.17.0"
+		"ws": "^8.17.1"
 	},
 	"devDependencies": {
 		"chai": "4.2.0",
